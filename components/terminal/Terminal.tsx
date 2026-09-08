@@ -1,9 +1,10 @@
 'use client';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { MotionConfig } from 'motion/react';
 import { TerminalPrompt } from './TerminalPrompt';
 import { TerminalBoot } from './TerminalBoot';
+import { useStartupSequence } from './useStartupSequence';
 import { TerminalHistory } from './TerminalHistory';
 import { TerminalInput } from './TerminalInput';
 import { CommandButtons } from './CommandButtons';
@@ -26,39 +27,10 @@ const ExperienceViewer = dynamic(
 export function Terminal() {
   const session = useTerminalSession();
   const { run, runCommands, intense, setIntense } = session;
-  const [stage, setStage] = useState<'boot' | 'typing' | 'ready'>('boot');
-  const [typed, setTyped] = useState('');
+  const startup = useStartupSequence(run);
+  const stage = startup.phase;
   const [effects, setEffects] = useState(true);
-  const started = useRef(false);
   const end = useRef<HTMLDivElement>(null);
-  const finishBoot = useCallback(
-    (skip: boolean) => {
-      if (started.current) return;
-      started.current = true;
-      try {
-        sessionStorage.setItem('jimmy-boot', 'done');
-      } catch {}
-      if (skip) {
-        setStage('ready');
-        run('whoami');
-      } else setStage('typing');
-    },
-    [run],
-  );
-  useEffect(() => {
-    if (stage !== 'typing') return;
-    let index = 0;
-    const timer = window.setInterval(() => {
-      index++;
-      setTyped('whoami'.slice(0, index));
-      if (index >= 6) {
-        clearInterval(timer);
-        run('whoami');
-        setStage('ready');
-      }
-    }, 75);
-    return () => clearInterval(timer);
-  }, [stage, run]);
   useEffect(() => {
     if (!intense) return;
     const timer = setTimeout(() => setIntense(false), 12000);
@@ -71,10 +43,18 @@ export function Terminal() {
   useWebMCP(run, stage === 'ready' && !session.exited);
   return (
     <MotionConfig reducedMotion="user">
-      <div className="site-shell">
-        <MatrixRain intense={session.intense} enabled={effects} />
+      <div className={`site-shell startup-${stage}`}>
+        <MatrixRain
+          intense={session.intense || stage === 'reveal'}
+          enabled={effects && (stage === 'reveal' || stage === 'ready')}
+        />
         {effects && <CRTOverlay />}
-        {stage === 'boot' && <TerminalBoot onComplete={finishBoot} />}
+        {stage === 'crt' && <TerminalBoot onSkip={startup.skip} />}
+        {stage !== 'crt' && stage !== 'ready' && (
+          <button className="startup-skip" onClick={startup.skip}>
+            SKIP INTRO ↵
+          </button>
+        )}
         <a href="#command-input" className="skip-link">
           Skip to terminal input
         </a>
@@ -83,7 +63,7 @@ export function Terminal() {
             className="wordmark"
             aria-label="Return to home directory"
             onClick={() => {
-              if (stage !== 'ready') finishBoot(true);
+              if (stage !== 'ready') startup.skip();
               else runCommands(['cd /', 'whoami']);
             }}
           >
@@ -113,7 +93,11 @@ export function Terminal() {
               MY CORNER OF THE INTERNET
             </p>
             <noscript>
-              <style>{'.boot-screen{display:none!important}'}</style>
+              <style>
+                {
+                  '.crt-startup{display:none!important}.startup-crt .site-header,.startup-crt .terminal,.startup-crt .site-footer{visibility:visible!important}'
+                }
+              </style>
               <Identity />
               <p>Enable JavaScript to explore the interactive terminal.</p>
               <ContactLinks />
@@ -122,13 +106,23 @@ export function Terminal() {
               entries={session.entries}
               runCommands={runCommands}
             />
-            {stage === 'typing' && (
-              <div className="command-line">
+            {['prompt', 'typing', 'enter'].includes(stage) && (
+              <div
+                className={`command-line startup-command ${stage === 'enter' ? 'command-submitted' : ''}`}
+              >
                 <TerminalPrompt />
                 <span>
-                  {typed}
-                  <span className="block-cursor" />
+                  {startup.typed}
+                  <span
+                    className="block-cursor typing-cursor"
+                    aria-hidden="true"
+                  />
                 </span>
+                {stage === 'enter' && (
+                  <span className="enter-key" aria-label="Enter pressed">
+                    ↵ ENTER
+                  </span>
+                )}
               </div>
             )}
             {stage === 'ready' && !session.exited && (

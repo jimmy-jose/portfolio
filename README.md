@@ -28,7 +28,7 @@ npm run build
 
 The session hook owns output history and effects. `ExperienceViewer` is a lazy-loaded, accessible dialog driven by a project ID, providing a boundary for a future Three.js scene renderer. It currently uses only DOM and Motion. Project features describe the supplied brief and do not claim additional features or impact metrics.
 
-The terminal uses normal document scrolling. Boot can be skipped by any key or pointer, lasts 2.2 seconds, and only plays once per tab session. Rain caps device-pixel ratio, draws at a low frame rate, reduces density on mobile, stops when hidden and respects reduced motion. Effects can also be turned off. All listeners, timers, canvas frames and optional WebMCP registration clean up on unmount.
+The terminal uses normal document scrolling. Startup replays on each page load: CRT power-on → session header → `whoami` typing → Enter → Matrix content reveal → clickable controls. The sequence lasts 2.85 seconds, can be skipped by a key or pointer, and is bypassed for reduced motion. The block cursor tracks the real input selection and horizontal scroll while editing. Rain caps device-pixel ratio, draws at a low frame rate, reduces density on mobile, stops when hidden and respects reduced motion. Effects can also be turned off. All listeners, timers, canvas frames and optional WebMCP registration clean up on unmount.
 
 ## Checks
 

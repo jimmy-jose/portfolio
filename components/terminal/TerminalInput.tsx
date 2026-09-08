@@ -1,6 +1,7 @@
 'use client';
 import { useRef, useState, type KeyboardEvent } from 'react';
 import { TerminalPrompt } from './TerminalPrompt';
+import { CommandEditor } from './CommandEditor';
 import { autocomplete } from '@/lib/terminal/autocomplete';
 export function TerminalInput({
   cwd,
@@ -72,28 +73,15 @@ export function TerminalInput({
         }}
       >
         <TerminalPrompt cwd={cwd} />
-        {!value && (
-          <span className="block-cursor input-cursor" aria-hidden="true" />
-        )}
-        <input
-          ref={input}
-          id="command-input"
-          name="command"
-          aria-label="Terminal command"
-          aria-describedby="input-help"
+        <CommandEditor
+          inputRef={input}
           value={value}
-          maxLength={4096}
-          onChange={(event) => {
-            setValue(event.target.value);
+          onChange={(nextValue) => {
+            setValue(nextValue);
             setIndex(null);
             setSuggestions([]);
           }}
           onKeyDown={keydown}
-          placeholder="Type a command…"
-          autoComplete="off"
-          autoCapitalize="off"
-          spellCheck={false}
-          enterKeyHint="send"
         />
         <button type="submit" className="input-submit" aria-label="Run command">
           ↵

@@ -28,7 +28,10 @@ export function MatrixRain({
       context.setTransform(ratio, 0, 0, ratio, 0, 0);
       drops = Array.from(
         { length: Math.ceil(width / (width < 700 ? 45 : 30)) },
-        () => (-Math.random() * height) / 18,
+        () =>
+          intense
+            ? (Math.random() * height) / 18
+            : (-Math.random() * height) / 18,
       );
       context.clearRect(0, 0, width, height);
     };
