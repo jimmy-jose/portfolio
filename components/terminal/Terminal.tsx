@@ -31,7 +31,7 @@ export function Terminal() {
   const stage = startup.phase;
   const printedLines = session.playback?.text.split('\n').length;
   const [effects, setEffects] = useState(true);
-  const end = useRef<HTMLDivElement>(null);
+  const scrollViewport = useRef<HTMLElement>(null);
   useEffect(() => {
     if (!intense) return;
     const timer = setTimeout(() => setIntense(false), 12000);
@@ -39,7 +39,8 @@ export function Terminal() {
   }, [intense, setIntense]);
   useEffect(() => {
     if (session.entries.length < 2 || session.project) return;
-    end.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
+    const viewport = scrollViewport.current;
+    viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'instant' });
   }, [session.entries.length, session.project, printedLines, session.busy]);
   useWebMCP(run, stage === 'ready' && !session.exited);
   return (
@@ -88,7 +89,14 @@ export function Terminal() {
               <span className="chrome-divider">/</span> v10.0
             </span>
           </div>
-          <div className="session">
+          {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- A scroll region must be focusable for keyboard scrolling. */}
+          <section
+            className="session"
+            ref={scrollViewport}
+            aria-label="Scrollable terminal content"
+            tabIndex={0}
+          >
+            {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
             <p className="session-meta">
               SESSION 001 <span>•</span> KERALA, INDIA <span>•</span> WELCOME TO
               MY CORNER OF THE INTERNET
@@ -152,11 +160,10 @@ export function Terminal() {
             {session.exited && !session.busy && (
               <TerminalExit reconnect={session.reconnect} run={run} />
             )}
-            <div ref={end} />
             <output className="sr-only" aria-live="polite" aria-atomic="true">
               {session.announcement}
             </output>
-          </div>
+          </section>
         </main>
         <footer className="site-footer">
           <span>

@@ -36,9 +36,12 @@
 }
 html {
   color-scheme: dark;
-  scroll-behavior: smooth;
+  height: 100%;
+  overflow: hidden;
 }
 body {
+  height: 100%;
+  overflow: hidden;
   margin: 0;
   background: var(--background);
   color: var(--foreground);
@@ -76,16 +79,21 @@ input:focus-visible {
 }
 .site-shell {
   position: relative;
-  min-height: 100svh;
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
   isolation: isolate;
   padding: 0 5.1vw;
 }
 .site-header {
+  width: 100%;
+  flex: none;
   max-width: 1500px;
   margin: auto;
   display: flex;
   align-items: center;
-  height: 108px;
+  height: clamp(52px, 10dvh, 108px);
   gap: 22px;
 }
 .wordmark {
@@ -127,6 +135,12 @@ input:focus-visible {
   box-shadow: 0 0 9px #9ffa6b55;
 }
 .terminal {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
   max-width: 1260px;
   margin: 15px auto 0;
   border: 1px solid var(--border);
@@ -158,6 +172,9 @@ input:focus-visible {
   border-bottom: 1px solid;
 }
 .terminal-chrome {
+  flex: none;
+  min-width: 0;
+  overflow-wrap: anywhere;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -178,6 +195,15 @@ input:focus-visible {
   margin: 0 12px;
 }
 .session {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior-y: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: #557a43 #0b120c;
+  scroll-padding-block: 20px;
   padding: 26px clamp(24px, 4.5vw, 66px) 33px;
 }
 .session-meta {
@@ -409,12 +435,14 @@ h1 {
   margin: 0 9px;
 }
 .site-footer {
+  width: 100%;
+  flex: none;
   max-width: 1260px;
   display: flex;
   gap: 20px;
   justify-content: space-between;
   margin: auto;
-  min-height: 92px;
+  min-height: clamp(40px, 8dvh, 92px);
   align-items: center;
   font-size: 12px;
   letter-spacing: 1px;
@@ -450,7 +478,7 @@ pre {
 }
 @media (min-width: 1450px) {
   .terminal {
-    margin-top: 32px;
+    margin-top: clamp(8px, 2dvh, 32px);
   }
   .session {
     padding-top: 30px;
@@ -472,7 +500,7 @@ pre {
     display: none;
   }
   .site-header {
-    height: 80px;
+    height: clamp(48px, 10dvh, 80px);
   }
   .site-shell {
     padding: 0 22px;
@@ -492,7 +520,7 @@ pre {
   }
   .site-footer {
     flex-wrap: wrap;
-    padding: 25px 0;
+    padding: 6px 0;
     gap: 12px;
   }
   .site-footer > span:nth-child(2) {
@@ -1423,4 +1451,28 @@ pre {
 .printing-controls button:hover {
   border-color: var(--primary);
   color: var(--primary);
+}
+
+.session:focus-visible {
+  outline: 1px solid #789965;
+  outline-offset: -5px;
+}
+@media (max-height: 500px) {
+  .site-header {
+    height: 42px;
+  }
+  .site-footer {
+    min-height: 32px;
+    font-size: 10px;
+    padding: 0;
+  }
+  .site-footer .effects-toggle {
+    padding: 3px 0;
+  }
+  .terminal {
+    margin-top: 0;
+  }
+  .terminal-chrome {
+    min-height: 38px;
+  }
 }
