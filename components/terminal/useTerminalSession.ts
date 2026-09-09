@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { useTerminalPlayback } from './useTerminalPlayback';
 import { executeCommand } from '@/lib/terminal/executeCommand';
 import type { SessionEntry, TerminalContext } from '@/lib/terminal/types';
+import type { GameId } from '@/lib/games/gameLauncher';
 export function useTerminalSession() {
   const context = useRef<TerminalContext>({ cwd: '/', history: [] });
   const sequence = useRef(0);
@@ -12,6 +13,7 @@ export function useTerminalSession() {
   const [exited, setExited] = useState(false);
   const [intense, setIntense] = useState(false);
   const [project, setProject] = useState<string | null>(null);
+  const [game, setGame] = useState<GameId | null>(null);
   const [announcement, setAnnouncement] = useState('');
   const prepare = useCallback((input: string): SessionEntry | undefined => {
     const command = input.trim();
@@ -38,6 +40,10 @@ export function useTerminalSession() {
     if (result.effect === 'exit') setExited(true);
     if (result.effect === 'matrix') setIntense((previous) => !previous);
     if (result.project) setProject(result.project);
+    if (result.game) {
+      setProject(null);
+      setGame(result.game);
+    }
     setAnnouncement(
       result.text ??
         (result.entries
@@ -65,6 +71,21 @@ export function useTerminalSession() {
     setExited(false);
     runCommands(['cd /', 'whoami']);
   }, [runCommands]);
+  const exitGame = useCallback((score: number) => {
+    setGame(null);
+    const text = `snake.exe terminated.\n\nFinal score: ${score}`;
+    setEntries((previous) => [
+      ...previous,
+      {
+        id: ++sequence.current,
+        command: '',
+        cwd: context.current.cwd,
+        result: { text },
+        system: true,
+      },
+    ]);
+    setAnnouncement(text);
+  }, []);
   return {
     entries,
     cwd,
@@ -72,11 +93,13 @@ export function useTerminalSession() {
     exited,
     intense,
     project,
+    game,
     announcement,
     ...playback,
     runImmediate,
     reconnect,
     setIntense,
     setProject,
+    exitGame,
   };
 }

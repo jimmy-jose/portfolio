@@ -17,6 +17,7 @@ export type CommandResult = {
   entries?: ListingEntry[];
   effect?: 'clear' | 'exit' | 'matrix';
   project?: string;
+  game?: GameId;
   error?: boolean;
 };
 export type CommandHandler = (
@@ -28,4 +29,6 @@ export type SessionEntry = {
   command: string;
   cwd: string;
   result: CommandResult;
+  system?: boolean;
 };
+import type { GameId } from '../games/gameLauncher';

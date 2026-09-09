@@ -119,10 +119,12 @@ const HistoryEntry = memo(function HistoryEntry({
 }) {
   return (
     <article className="history-entry">
-      <div className="command-line">
-        <TerminalPrompt cwd={entry.cwd} />
-        <span className="executed-command">{entry.command}</span>
-      </div>
+      {!entry.system && (
+        <div className="command-line">
+          <TerminalPrompt cwd={entry.cwd} />
+          <span className="executed-command">{entry.command}</span>
+        </div>
+      )}
       <div className="command-result" aria-busy={!!printing}>
         {printing ? (
           <pre

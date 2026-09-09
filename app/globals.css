@@ -87,6 +87,8 @@ input:focus-visible {
   padding: 0 5.1vw;
 }
 .site-header {
+  position: relative;
+  z-index: 1;
   width: 100%;
   flex: none;
   max-width: 1500px;
@@ -144,11 +146,14 @@ input:focus-visible {
   max-width: 1260px;
   margin: 15px auto 0;
   border: 1px solid var(--border);
-  background: #090f0bef;
+  background: linear-gradient(180deg, #0b140fd9 0%, #070d09cc 100%), #070d09cc;
+  backdrop-filter: blur(1.2px);
   box-shadow:
-    0 20px 100px #0005,
-    inset 0 0 80px #1930200c;
+    0 24px 110px #0008,
+    0 0 42px #87d3670b,
+    inset 0 0 80px #19302012;
   position: relative;
+  z-index: 1;
 }
 .terminal::before,
 .terminal::after {
@@ -184,7 +189,7 @@ input:focus-visible {
   font-size: 12px;
   color: #8eaa92;
   letter-spacing: 0.3px;
-  background: #111a1390;
+  background: #0e1711d6;
   gap: 15px;
 }
 .terminal-chrome .status-dot {
@@ -435,6 +440,8 @@ h1 {
   margin: 0 9px;
 }
 .site-footer {
+  position: relative;
+  z-index: 1;
   width: 100%;
   flex: none;
   max-width: 1260px;
@@ -594,13 +601,13 @@ pre {
   inset: 0;
   width: 100%;
   height: 100%;
-  z-index: -2;
-  opacity: 0.16;
+  z-index: 0;
+  opacity: 0.34;
   pointer-events: none;
   transition: opacity 1s;
 }
 .matrix-rain.intense {
-  opacity: 0.4;
+  opacity: 0.58;
 }
 .crt-overlay {
   position: fixed;
@@ -1244,7 +1251,7 @@ pre {
   font-size: 12px;
 }
 .startup-reveal .terminal {
-  background: #090f0be0;
+  background: linear-gradient(180deg, #0b140fd4 0%, #070d09c4 100%), #070d09c4;
 }
 .startup-reveal .identity {
   position: relative;
@@ -1474,6 +1481,290 @@ pre {
   }
   .terminal-chrome {
     min-height: 38px;
+  }
+}
+
+/* snake.exe keeps the terminal shell while replacing only its scrollable session. */
+.session.game-session {
+  padding: 12px clamp(12px, 2.5vw, 32px) 18px;
+}
+.snake-game {
+  width: 100%;
+  min-height: 100%;
+  max-width: 920px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  outline: none;
+  animation: snake-process-start 0.22s steps(3) both;
+}
+.snake-hud {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 2.5vw, 28px);
+  padding: 9px 0 12px;
+  border-bottom: 1px solid #2b422e;
+  color: #88a98a;
+  font-size: 11px;
+  letter-spacing: 0.7px;
+  white-space: nowrap;
+}
+.snake-hud strong {
+  color: var(--primary);
+  font-size: 13px;
+  letter-spacing: 1.5px;
+}
+.snake-node-status {
+  margin-left: auto;
+  color: #d2f7bc;
+}
+.snake-screen {
+  color: #a9bdaa;
+}
+.snake-start-screen {
+  width: min(100%, 620px);
+  margin: auto;
+  padding: clamp(25px, 6vh, 64px) 0;
+}
+.snake-kicker {
+  margin: 0 0 10px;
+  color: var(--primary);
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+.snake-screen h2 {
+  margin: 0 0 27px;
+  color: #d8eccd;
+  font-size: clamp(24px, 4vw, 42px);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -1px;
+}
+.snake-instructions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-bottom: 30px;
+}
+.snake-instructions p {
+  margin: 0;
+  padding: 14px;
+  border: 1px solid #263c29;
+  background: #0a120cba;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.snake-instructions span {
+  display: block;
+  margin-bottom: 5px;
+  color: #6f966b;
+  letter-spacing: 1.5px;
+}
+.snake-screen-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.snake-screen-actions button,
+.snake-return,
+.snake-controls button {
+  border: 1px solid #3b5b3d;
+  background: #0c160ea8;
+  color: #b9d8aa;
+  min-height: 44px;
+  padding: 8px 15px;
+  touch-action: manipulation;
+}
+.snake-screen-actions button:hover,
+.snake-return:hover,
+.snake-controls button:hover {
+  border-color: #7fac6c;
+  background: #172719;
+  color: var(--primary);
+}
+.snake-start-screen small {
+  display: block;
+  margin-top: 16px;
+  color: #627866;
+}
+.snake-play-area {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(240px, 1fr) minmax(180px, 230px);
+  align-items: center;
+  gap: clamp(16px, 3vw, 34px);
+  padding-top: 14px;
+}
+.snake-board-frame {
+  position: relative;
+  width: min(100%, 54dvh, 500px);
+  aspect-ratio: 1;
+  margin: auto;
+  border: 1px solid #46604a;
+  background: #050a06;
+  box-shadow:
+    0 0 28px #76c55712,
+    inset 0 0 30px #0008;
+}
+.snake-board-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent 0,
+    transparent 3px,
+    #0000001c 3px,
+    #0000001c 4px
+  );
+}
+.snake-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  touch-action: none;
+  user-select: none;
+}
+.snake-paused {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: #050a06c7;
+  color: #92aa91;
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+.snake-paused strong {
+  color: var(--primary);
+  font-size: 17px;
+}
+.snake-controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+}
+.snake-direction-pad {
+  display: grid;
+  grid-template-columns: repeat(3, 54px);
+  grid-template-rows: repeat(2, 54px);
+  gap: 7px;
+}
+.snake-direction-pad button {
+  min-width: 54px;
+  min-height: 54px;
+  padding: 0;
+  font-size: 20px;
+}
+.snake-up {
+  grid-column: 2;
+}
+.snake-left {
+  grid-column: 1;
+  grid-row: 2;
+}
+.snake-down {
+  grid-column: 2;
+  grid-row: 2;
+}
+.snake-right {
+  grid-column: 3;
+  grid-row: 2;
+}
+.snake-pause,
+.snake-return {
+  width: 176px;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+.snake-return {
+  justify-self: center;
+  margin-top: 10px;
+}
+.snake-game-over {
+  padding: 22px 0;
+}
+.snake-game-over h2 {
+  margin-bottom: 16px;
+  font-size: clamp(20px, 3vw, 30px);
+}
+.snake-game-over > p:not(.snake-kicker) {
+  margin: 6px 0;
+  color: #92a795;
+  font-size: 12px;
+}
+.snake-game-over .snake-screen-actions {
+  margin-top: 22px;
+}
+@keyframes snake-process-start {
+  from {
+    opacity: 0;
+    filter: brightness(2);
+    transform: translateY(3px);
+  }
+  to {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+}
+@media (max-width: 720px) {
+  .snake-hud {
+    flex-wrap: wrap;
+    gap: 5px 16px;
+    white-space: normal;
+  }
+  .snake-node-status {
+    margin-left: 0;
+  }
+  .snake-play-area {
+    grid-template-columns: 1fr;
+    overflow: visible;
+  }
+  .snake-board-frame {
+    width: min(100%, 46dvh, 420px);
+  }
+  .snake-controls {
+    gap: 10px;
+  }
+  .snake-direction-pad {
+    grid-template-columns: repeat(3, 48px);
+    grid-template-rows: repeat(2, 48px);
+  }
+  .snake-direction-pad button {
+    min-width: 48px;
+    min-height: 48px;
+  }
+  .snake-pause,
+  .snake-return {
+    width: 158px;
+  }
+  .snake-game-over {
+    padding: 8px 0 18px;
+    text-align: center;
+  }
+  .snake-game-over .snake-screen-actions {
+    justify-content: center;
+  }
+}
+@media (max-width: 480px) {
+  .session.game-session {
+    padding: 9px 10px 16px;
+  }
+  .snake-instructions {
+    grid-template-columns: 1fr;
+  }
+  .snake-board-frame {
+    width: min(100%, 42dvh);
   }
 }
 /* Compact terminal density keeps the opening profile and prompt together. */

@@ -43,17 +43,25 @@ export function MatrixRain({
       context.fillStyle = 'rgba(8,12,9,0.09)';
       context.fillRect(0, 0, width, height);
       context.font = '13px monospace';
-      context.fillStyle = intense ? '#82ed6c' : '#4d8b45';
+      context.textBaseline = 'top';
       drops.forEach((drop, index) => {
-        if (!intense && index % 3 !== 0) return;
+        if (!intense && index % 2 !== 0) return;
         const x = index * (width < 700 ? 45 : 30);
+        const y = drop * 18;
+        context.fillStyle = intense ? '#82ed6c' : '#568f4d';
         context.fillText(
           glyphs[Math.floor(Math.random() * glyphs.length)],
           x,
-          drop * 18,
+          y,
         );
-        drops[index] += intense ? 1.15 : 0.55;
-        if (drop * 18 > height && Math.random() > 0.975)
+        context.fillStyle = intense ? '#dcffd2' : '#9ed58c';
+        context.fillText(
+          glyphs[Math.floor(Math.random() * glyphs.length)],
+          x,
+          y - 18,
+        );
+        drops[index] += intense ? 1.15 : 0.62;
+        if (y > height && Math.random() > 0.975)
           drops[index] = -Math.random() * 30;
       });
     };

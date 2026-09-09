@@ -17,6 +17,7 @@ import { useTerminalSession } from './useTerminalSession';
 import { useWebMCP } from './useWebMCP';
 import { displayPath } from '@/lib/terminal/pathResolver';
 import { navigationCommands } from '@/lib/terminal/navigation';
+import { SnakeGame } from '@/components/games/snake/SnakeGame';
 const ExperienceViewer = dynamic(
   () =>
     import('@/components/experiences/ExperienceViewer').then(
@@ -38,17 +39,18 @@ export function Terminal() {
     return () => clearTimeout(timer);
   }, [intense, setIntense]);
   useEffect(() => {
-    if (stage !== 'ready' || session.project) return;
+    if (stage !== 'ready' || session.project || session.game) return;
     const viewport = scrollViewport.current;
     viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'instant' });
   }, [
     stage,
     session.entries.length,
     session.project,
+    session.game,
     printedLines,
     session.busy,
   ]);
-  useWebMCP(run, stage === 'ready' && !session.exited);
+  useWebMCP(run, stage === 'ready' && !session.exited && !session.game);
   return (
     <MotionConfig reducedMotion="user">
       <div className={`site-shell startup-${stage}`}>
@@ -71,6 +73,7 @@ export function Terminal() {
             className="wordmark"
             aria-label="Return to home directory"
             onClick={() => {
+              if (session.game) return;
               if (stage !== 'ready') startup.skip();
               else runCommands(['cd /', 'whoami']);
             }}
@@ -97,74 +100,87 @@ export function Terminal() {
           </div>
           {/* oxlint-disable jsx-a11y/no-noninteractive-tabindex -- A scroll region must be focusable for keyboard scrolling. */}
           <section
-            className="session"
+            className={`session ${session.game ? 'game-session' : ''}`}
             ref={scrollViewport}
             aria-label="Scrollable terminal content"
             tabIndex={0}
           >
             {/* oxlint-enable jsx-a11y/no-noninteractive-tabindex */}
-            <p className="session-meta">
-              SESSION 001 <span>•</span> KERALA, INDIA <span>•</span> WELCOME TO
-              MY CORNER OF THE INTERNET
-            </p>
-            <noscript>
-              <style>
-                {
-                  '.crt-startup{display:none!important}.startup-crt .site-header,.startup-crt .terminal,.startup-crt .site-footer{visibility:visible!important}'
-                }
-              </style>
-              <Identity />
-              <p>Enable JavaScript to explore the interactive terminal.</p>
-              <ContactLinks />
-            </noscript>
-            <TerminalHistory
-              entries={session.entries}
-              runCommands={runCommands}
-              playback={session.playback}
-            />
-            {['prompt', 'typing', 'enter'].includes(stage) && (
-              <div
-                className={`command-line startup-command ${stage === 'enter' ? 'command-submitted' : ''}`}
-              >
-                <TerminalPrompt />
-                <span>
-                  {startup.typed}
-                  <span
-                    className="block-cursor typing-cursor"
-                    aria-hidden="true"
-                  />
-                </span>
-                {stage === 'enter' && (
-                  <span className="enter-key" aria-label="Enter pressed">
-                    ↵ ENTER
-                  </span>
-                )}
-              </div>
-            )}
-            {stage === 'ready' && !session.exited && !session.busy && (
+            {session.game === 'snake' ? (
+              <SnakeGame
+                onExit={(score) => {
+                  session.exitGame(score);
+                  requestAnimationFrame(() =>
+                    document.getElementById('command-input')?.focus(),
+                  );
+                }}
+              />
+            ) : (
               <>
-                <CommandButtons
-                  cwd={session.cwd}
-                  run={run}
+                <p className="session-meta">
+                  SESSION 001 <span>•</span> KERALA, INDIA <span>•</span>{' '}
+                  WELCOME TO MY CORNER OF THE INTERNET
+                </p>
+                <noscript>
+                  <style>
+                    {
+                      '.crt-startup{display:none!important}.startup-crt .site-header,.startup-crt .terminal,.startup-crt .site-footer{visibility:visible!important}'
+                    }
+                  </style>
+                  <Identity />
+                  <p>Enable JavaScript to explore the interactive terminal.</p>
+                  <ContactLinks />
+                </noscript>
+                <TerminalHistory
+                  entries={session.entries}
                   runCommands={runCommands}
+                  playback={session.playback}
                 />
-                <TerminalInput
-                  cwd={session.cwd}
-                  history={session.history}
-                  onCommand={session.submit}
-                />
+                {['prompt', 'typing', 'enter'].includes(stage) && (
+                  <div
+                    className={`command-line startup-command ${stage === 'enter' ? 'command-submitted' : ''}`}
+                  >
+                    <TerminalPrompt />
+                    <span>
+                      {startup.typed}
+                      <span
+                        className="block-cursor typing-cursor"
+                        aria-hidden="true"
+                      />
+                    </span>
+                    {stage === 'enter' && (
+                      <span className="enter-key" aria-label="Enter pressed">
+                        ↵ ENTER
+                      </span>
+                    )}
+                  </div>
+                )}
+                {stage === 'ready' && !session.exited && !session.busy && (
+                  <>
+                    <CommandButtons
+                      cwd={session.cwd}
+                      run={run}
+                      runCommands={runCommands}
+                    />
+                    <TerminalInput
+                      cwd={session.cwd}
+                      history={session.history}
+                      onCommand={session.submit}
+                    />
+                  </>
+                )}
+                {session.busy && (
+                  <div className="printing-controls">
+                    <span>
+                      PRINTING<span aria-hidden="true">…</span>
+                    </span>
+                    <button onClick={session.skipPrinting}>SHOW ALL ↓</button>
+                  </div>
+                )}
+                {session.exited && !session.busy && (
+                  <TerminalExit reconnect={session.reconnect} run={run} />
+                )}
               </>
-            )}
-            {session.busy && (
-              <div className="printing-controls">
-                <span>
-                  PRINTING<span aria-hidden="true">…</span>
-                </span>
-                <button onClick={session.skipPrinting}>SHOW ALL ↓</button>
-              </div>
-            )}
-            {session.exited && !session.busy && (
-              <TerminalExit reconnect={session.reconnect} run={run} />
             )}
             <output className="sr-only" aria-live="polite" aria-atomic="true">
               {session.announcement}

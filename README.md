@@ -17,6 +17,9 @@ npm run build
 ## Content configuration
 
 - `data/portfolio.ts`: project stories and contact configuration.
+- `data/randomFacts.ts`: personal details printed by the `random` command.
+- `data/terminalQuips.ts`: randomized light-mode refusal messages.
+- `data/techStack.ts`: formatted output for the `tech` command.
 - `data/filesystem.ts`: resume content as a typed, read-only virtual filesystem.
 - Add the original PDF at `public/resume.pdf`, then set `contact.resume` to `/resume.pdf`.
 - Set `contact.github` and `contact.linkedin` to verified HTTPS profile URLs. Missing URLs are omitted; the resume action explains when the original document is unavailable.
@@ -28,7 +31,9 @@ npm run build
 
 The session hook owns output history and effects. `ExperienceViewer` is a lazy-loaded, accessible dialog driven by a project ID, providing a boundary for a future Three.js scene renderer. It currently uses only DOM and Motion. Project features describe the supplied brief and do not claim additional features or impact metrics.
 
-The page stays fixed to the viewport. The terminal fills the space between the site header and footer; its chrome stays fixed while its content scrolls internally. Output auto-scroll is scoped to that content area and moves to the bottom as soon as startup finishes, keeping the input cursor visible. The profile and navigation use compact spacing to fit together on typical desktop screens. The scroll region is keyboard-focusable and adapts to smaller screens. Startup replays on each page load: CRT power-on → session header → `whoami` typing → Enter → Matrix content reveal → clickable controls. The sequence lasts 2.85 seconds, can be skipped by a key or pointer, and is bypassed for reduced motion. The block cursor tracks the real input selection and horizontal scroll while editing. Rain caps device-pixel ratio, draws at a low frame rate, reduces density on mobile, stops when hidden and respects reduced motion. Effects can also be turned off. All listeners, timers, canvas frames and optional WebMCP registration clean up on unmount.
+`play snake` launches a Canvas-based game inside the terminal session without changing routes. The pure engine in `lib/games/snake/` owns movement, growth, collision, food placement and speed. React manages the start, pause and game-over screens, while Canvas draws each fixed-step update without rerendering the portfolio. Keyboard, swipe and touch-button controls are scoped to game mode; Escape returns to the terminal and prints the final score.
+
+The page stays fixed to the viewport. The terminal fills the space between the site header and footer; its chrome stays fixed while its content scrolls internally. Output auto-scroll is scoped to that content area and moves to the bottom as soon as startup finishes, keeping the input cursor visible. The profile and navigation use compact spacing to fit together on typical desktop screens. The scroll region is keyboard-focusable and adapts to smaller screens. Startup replays on each page load: CRT power-on → session header → `whoami` typing → Enter → Matrix content reveal → clickable controls. The sequence lasts 2.85 seconds, can be skipped by a key or pointer, and is bypassed for reduced motion. The block cursor tracks the real input selection and horizontal scroll while editing. Matrix rain fills the page behind the terminal and remains subtly visible through its translucent CRT glass. The canvas caps device-pixel ratio, draws at a low frame rate, reduces density on mobile, stops when hidden and respects reduced motion. Effects can also be turned off. All listeners, timers, canvas frames and optional WebMCP registration clean up on unmount.
 
 On desktop, pressing any printable key outside another control focuses the terminal input and retains that first character. Modifier shortcuts, dialog interactions, links, buttons and editable controls keep their native keyboard behavior. Touch devices still require an explicit tap, which avoids opening a mobile keyboard unexpectedly.
 

@@ -6,6 +6,8 @@ import { parseCommand } from '../lib/terminal/commandParser';
 import { autocomplete } from '../lib/terminal/autocomplete';
 import { navigationCommands } from '../lib/terminal/navigation';
 import { filesystem } from '../data/filesystem';
+import { pickRandomFact, randomFacts } from '../data/randomFacts';
+import { lightModeRefusals, pickLightModeRefusal } from '../data/terminalQuips';
 import type { DirectoryNode, TerminalContext } from '../lib/terminal/types';
 const root: TerminalContext = { cwd: '/', history: [] };
 void test('paths normalize and cannot escape root', () => {
@@ -94,6 +96,25 @@ void test('project open is separate from file reading', () => {
     'resume',
   );
 });
+void test('play lists games and launches snake through a game result', () => {
+  assert.equal(
+    executeCommand('play', root).text,
+    'Available games:\n\nsnake\n\nUsage:\nplay snake',
+  );
+  assert.equal(executeCommand('play snake', root).game, 'snake');
+  assert.equal(executeCommand('play pong', root).error, true);
+});
+void test('tech reports the portfolio stack and appears in help', () => {
+  const output = executeCommand('tech', root).text ?? '';
+  assert.match(output, /Next\.js 16/);
+  assert.match(output, /Canvas 2D/);
+  assert.match(output, /custom-built/);
+  assert.match(
+    executeCommand('help', root).text ?? '',
+    /tech\s+Show this portfolio/,
+  );
+  assert.deepEqual(autocomplete('tec', '/'), ['tech ']);
+});
 void test('click navigation runs the same commands as typed navigation', () => {
   let context = root;
   const commands = navigationCommands('/experience/spenmo');
@@ -135,6 +156,8 @@ void test('identity, lifecycle and easter eggs use predictable results', () => {
     /Permission denied/,
   );
   assert.match(executeCommand('coffee', root).text ?? '', /100%/);
+  const randomOutput = executeCommand('random', root).text ?? '';
+  assert.ok(randomFacts.some((fact) => randomOutput.includes(fact)));
   assert.equal(executeCommand('pwd', root).text, '/');
   assert.match(
     executeCommand('history', { cwd: '/', history: ['whoami', 'pwd'] }).text ??
@@ -142,6 +165,34 @@ void test('identity, lifecycle and easter eggs use predictable results', () => {
     /2  pwd/,
   );
   assert.equal(executeCommand('x'.repeat(4097), root).error, true);
+});
+void test('random facts cover the complete list', () => {
+  assert.equal(
+    pickRandomFact(() => 0),
+    randomFacts[0],
+  );
+  assert.equal(
+    pickRandomFact(() => 0.999999),
+    randomFacts[randomFacts.length - 1],
+  );
+});
+void test('light mode commands refuse with a random quip', () => {
+  for (const command of ['light', 'lightmode']) {
+    const output = executeCommand(command, root);
+    assert.equal(output.effect, undefined);
+    assert.match(output.text ?? '', /LIGHT MODE REQUEST: DENIED/);
+    assert.ok(
+      lightModeRefusals.some((message) => output.text?.includes(message)),
+    );
+  }
+  assert.equal(
+    pickLightModeRefusal(() => 0),
+    lightModeRefusals[0],
+  );
+  assert.equal(
+    pickLightModeRefusal(() => 0.999999),
+    lightModeRefusals[lightModeRefusals.length - 1],
+  );
 });
 void test('tree describes the current subtree', () => {
   const result = executeCommand('tree', {
