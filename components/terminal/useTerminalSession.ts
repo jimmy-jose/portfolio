@@ -1,5 +1,6 @@
 'use client';
 import { useCallback, useRef, useState } from 'react';
+import { useTerminalPlayback } from './useTerminalPlayback';
 import { executeCommand } from '@/lib/terminal/executeCommand';
 import type { SessionEntry, TerminalContext } from '@/lib/terminal/types';
 export function useTerminalSession() {
@@ -12,7 +13,7 @@ export function useTerminalSession() {
   const [intense, setIntense] = useState(false);
   const [project, setProject] = useState<string | null>(null);
   const [announcement, setAnnouncement] = useState('');
-  const run = useCallback((input: string) => {
+  const prepare = useCallback((input: string): SessionEntry | undefined => {
     const command = input.trim();
     if (!command) return;
     const before = context.current;
@@ -30,6 +31,10 @@ export function useTerminalSession() {
     setEntries((previous) =>
       result.effect === 'clear' ? [] : [...previous, entry],
     );
+    return entry;
+  }, []);
+  const complete = useCallback((entry: SessionEntry) => {
+    const { result } = entry;
     if (result.effect === 'exit') setExited(true);
     if (result.effect === 'matrix') setIntense((previous) => !previous);
     if (result.project) setProject(result.project);
@@ -43,17 +48,23 @@ export function useTerminalSession() {
               ? `Current directory: ${result.cwd}`
               : 'Screen cleared.'),
     );
-    return result;
   }, []);
-  const runCommands = useCallback(
-    (commands: string[]) => commands.forEach(run),
-    [run],
+  const getCwd = useCallback(() => context.current.cwd, []);
+  const playback = useTerminalPlayback({ prepare, complete, getCwd });
+  // Startup already types its command; commit through the same engine once.
+  const runImmediate = useCallback(
+    (command: string) => {
+      const entry = prepare(command);
+      if (entry) complete(entry);
+      return entry?.result;
+    },
+    [prepare, complete],
   );
+  const { runCommands } = playback;
   const reconnect = useCallback(() => {
     setExited(false);
-    run('cd /');
-    run('whoami');
-  }, [run]);
+    runCommands(['cd /', 'whoami']);
+  }, [runCommands]);
   return {
     entries,
     cwd,
@@ -62,8 +73,8 @@ export function useTerminalSession() {
     intense,
     project,
     announcement,
-    run,
-    runCommands,
+    ...playback,
+    runImmediate,
     reconnect,
     setIntense,
     setProject,

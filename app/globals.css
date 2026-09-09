@@ -1375,3 +1375,52 @@ pre {
     transform: none;
   }
 }
+.queued-command {
+  margin-top: 28px;
+  min-height: 28px;
+}
+.queued-command > span:last-child {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  min-width: 0;
+}
+.print-cursor {
+  margin: 0;
+  width: 1ch;
+  height: 1.1em;
+  vertical-align: text-bottom;
+}
+.command-result .printing-output {
+  min-height: 1.9em;
+  color: #bbcfb1;
+}
+.file-list {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0;
+}
+.printing-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  border-top: 1px solid #23341f;
+  margin-top: 25px;
+  padding-top: 16px;
+  color: #91a884;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+.printing-controls button {
+  border: 1px solid #405c32;
+  background: #14210e;
+  color: #bad8a9;
+  padding: 8px 14px;
+  min-height: 40px;
+  font-size: 12px;
+}
+.printing-controls button:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+}

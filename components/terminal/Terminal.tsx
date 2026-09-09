@@ -27,8 +27,9 @@ const ExperienceViewer = dynamic(
 export function Terminal() {
   const session = useTerminalSession();
   const { run, runCommands, intense, setIntense } = session;
-  const startup = useStartupSequence(run);
+  const startup = useStartupSequence(session.runImmediate);
   const stage = startup.phase;
+  const printedLines = session.playback?.text.split('\n').length;
   const [effects, setEffects] = useState(true);
   const end = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -39,7 +40,7 @@ export function Terminal() {
   useEffect(() => {
     if (session.entries.length < 2 || session.project) return;
     end.current?.scrollIntoView({ block: 'nearest', behavior: 'instant' });
-  }, [session.entries.length, session.project]);
+  }, [session.entries.length, session.project, printedLines, session.busy]);
   useWebMCP(run, stage === 'ready' && !session.exited);
   return (
     <MotionConfig reducedMotion="user">
@@ -105,6 +106,7 @@ export function Terminal() {
             <TerminalHistory
               entries={session.entries}
               runCommands={runCommands}
+              playback={session.playback}
             />
             {['prompt', 'typing', 'enter'].includes(stage) && (
               <div
@@ -125,7 +127,7 @@ export function Terminal() {
                 )}
               </div>
             )}
-            {stage === 'ready' && !session.exited && (
+            {stage === 'ready' && !session.exited && !session.busy && (
               <>
                 <CommandButtons
                   cwd={session.cwd}
@@ -135,11 +137,19 @@ export function Terminal() {
                 <TerminalInput
                   cwd={session.cwd}
                   history={session.history}
-                  onCommand={run}
+                  onCommand={session.submit}
                 />
               </>
             )}
-            {session.exited && (
+            {session.busy && (
+              <div className="printing-controls">
+                <span>
+                  PRINTING<span aria-hidden="true">…</span>
+                </span>
+                <button onClick={session.skipPrinting}>SHOW ALL ↓</button>
+              </div>
+            )}
+            {session.exited && !session.busy && (
               <TerminalExit reconnect={session.reconnect} run={run} />
             )}
             <div ref={end} />

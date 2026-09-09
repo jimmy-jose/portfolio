@@ -1,5 +1,6 @@
 'use client';
 import { memo } from 'react';
+import type { PlaybackFrame } from './useTerminalPlayback';
 import { motion } from 'motion/react';
 import { Identity } from './Identity';
 import { TerminalPrompt } from './TerminalPrompt';
@@ -110,8 +111,10 @@ function RichResult({ result }: { result: CommandResult }) {
 const HistoryEntry = memo(function HistoryEntry({
   entry,
   runCommands,
+  printing,
 }: {
   entry: SessionEntry;
+  printing?: PlaybackFrame;
   runCommands: (commands: string[]) => void;
 }) {
   return (
@@ -120,9 +123,19 @@ const HistoryEntry = memo(function HistoryEntry({
         <TerminalPrompt cwd={entry.cwd} />
         <span className="executed-command">{entry.command}</span>
       </div>
-      <div className="command-result">
-        <RichResult result={entry.result} />
-        {entry.result.entries && (
+      <div className="command-result" aria-busy={!!printing}>
+        {printing ? (
+          <pre
+            className={`printing-output ${entry.result.error ? 'error-output' : ''}`}
+            aria-hidden="true"
+          >
+            {printing.text}
+            <span className="block-cursor print-cursor" />
+          </pre>
+        ) : (
+          <RichResult result={entry.result} />
+        )}
+        {!printing && entry.result.entries && (
           <div className="file-list">
             {entry.result.entries.map((item) => (
               <button
@@ -143,15 +156,31 @@ const HistoryEntry = memo(function HistoryEntry({
 export function TerminalHistory({
   entries,
   runCommands,
+  playback,
 }: {
   entries: SessionEntry[];
+  playback: PlaybackFrame | null;
   runCommands: (commands: string[]) => void;
 }) {
   return (
     <div className="terminal-history" aria-label="Terminal session history">
       {entries.map((entry) => (
-        <HistoryEntry key={entry.id} entry={entry} runCommands={runCommands} />
+        <HistoryEntry
+          key={entry.id}
+          entry={entry}
+          runCommands={runCommands}
+          printing={playback?.entryId === entry.id ? playback : undefined}
+        />
       ))}
+      {playback?.phase === 'typing' && (
+        <div className="command-line queued-command" aria-hidden="true">
+          <TerminalPrompt cwd={playback.cwd} />
+          <span>
+            {playback.typed}
+            <span className="block-cursor print-cursor" />
+          </span>
+        </div>
+      )}
     </div>
   );
 }

@@ -37,3 +37,7 @@ Automated tests cover paths, filesystem content, quoted arguments, prototype key
 ## Remaining content inputs
 
 The supplied attachment contains the brief only: the original resume PDF and verified GitHub/LinkedIn URLs still need to be provided. No substitute resume or invented social profile is shipped.
+
+## Terminal printing
+
+Clicks enqueue complete command batches, so a navigation action types `cd`, changes directory, then types `ls` and prints its output. File contents stream character by character and directory listings print in order. Typed commands use the same queue and print their results without retyping the submitted command. Project and logout effects wait until their output finishes. “Show all” fast-forwards the queued work; reduced motion bypasses delays. Only completed output is announced to screen readers. Pending animation timers are cancelled on unmount.

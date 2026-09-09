@@ -15,7 +15,7 @@ type ModelContext = {
   ) => void | Promise<void>;
 };
 export function useWebMCP(
-  run: (command: string) => CommandResult | undefined,
+  run: (command: string) => Promise<CommandResult | undefined>,
   enabled: boolean,
 ) {
   useEffect(() => {
@@ -38,7 +38,7 @@ export function useWebMCP(
               additionalProperties: false,
             },
             annotations: { readOnlyHint: false, untrustedContentHint: false },
-            execute(input) {
+            async execute(input) {
               if (
                 typeof input !== 'object' ||
                 input === null ||
@@ -50,10 +50,8 @@ export function useWebMCP(
                   'Expected a command string of at most 4,096 characters.',
                 );
               const command = input.command;
-              let result: CommandResult | undefined;
-              flushSync(() => {
-                result = run(command);
-              });
+              const result = await run(command);
+              flushSync(() => {});
               return result ?? {};
             },
           },
