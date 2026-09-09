@@ -1,8 +1,9 @@
 'use client';
-import { useRef, useState, type KeyboardEvent } from 'react';
+import { useEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { TerminalPrompt } from './TerminalPrompt';
 import { CommandEditor } from './CommandEditor';
 import { autocomplete } from '@/lib/terminal/autocomplete';
+import { shouldCaptureGlobalTyping } from '@/lib/terminal/globalTyping';
 export function TerminalInput({
   cwd,
   history,
@@ -17,6 +18,50 @@ export function TerminalInput({
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const draft = useRef('');
   const input = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    const desktopPointer = matchMedia('(hover: hover) and (pointer: fine)');
+    let focusFrame = 0;
+    const captureTyping = (event: globalThis.KeyboardEvent) => {
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      if (
+        document.querySelector('[role="dialog"]') ||
+        !shouldCaptureGlobalTyping(
+          {
+            key: event.key,
+            metaKey: event.metaKey,
+            ctrlKey: event.ctrlKey,
+            altKey: event.altKey,
+            defaultPrevented: event.defaultPrevented,
+            targetTag: target?.tagName,
+            targetIsEditable: target?.isContentEditable ?? false,
+          },
+          desktopPointer.matches,
+        )
+      )
+        return;
+
+      const editor = input.current;
+      if (!editor) return;
+      event.preventDefault();
+      const start = editor.selectionStart ?? editor.value.length;
+      const end = editor.selectionEnd ?? start;
+      const nextValue = `${editor.value.slice(0, start)}${event.key}${editor.value.slice(end)}`;
+      const nextCaret = start + event.key.length;
+      setValue(nextValue);
+      setIndex(null);
+      setSuggestions([]);
+      cancelAnimationFrame(focusFrame);
+      focusFrame = requestAnimationFrame(() => {
+        editor.focus({ preventScroll: true });
+        editor.setSelectionRange(nextCaret, nextCaret);
+      });
+    };
+    window.addEventListener('keydown', captureTyping);
+    return () => {
+      cancelAnimationFrame(focusFrame);
+      window.removeEventListener('keydown', captureTyping);
+    };
+  }, []);
   const submit = () => {
     if (!value.trim()) return;
     onCommand(value);
