@@ -38,10 +38,16 @@ export function Terminal() {
     return () => clearTimeout(timer);
   }, [intense, setIntense]);
   useEffect(() => {
-    if (session.entries.length < 2 || session.project) return;
+    if (stage !== 'ready' || session.project) return;
     const viewport = scrollViewport.current;
     viewport?.scrollTo({ top: viewport.scrollHeight, behavior: 'instant' });
-  }, [session.entries.length, session.project, printedLines, session.busy]);
+  }, [
+    stage,
+    session.entries.length,
+    session.project,
+    printedLines,
+    session.busy,
+  ]);
   useWebMCP(run, stage === 'ready' && !session.exited);
   return (
     <MotionConfig reducedMotion="user">

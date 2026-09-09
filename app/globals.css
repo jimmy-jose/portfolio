@@ -1476,3 +1476,114 @@ pre {
     min-height: 38px;
   }
 }
+/* Compact terminal density keeps the opening profile and prompt together. */
+.site-header {
+  height: clamp(42px, 7dvh, 72px);
+}
+.site-footer {
+  min-height: 40px;
+}
+.terminal {
+  margin-top: 8px;
+}
+.session {
+  padding: 16px clamp(20px, 3vw, 42px);
+}
+.session-meta {
+  margin-bottom: 14px;
+}
+.identity,
+.history-entry:not(:first-child) .identity {
+  padding-top: 12px;
+}
+.identity .eyebrow {
+  margin-bottom: 2px;
+  letter-spacing: 1.6px;
+}
+.identity h1 {
+  font-size: clamp(36px, 5.5dvh, 56px);
+  line-height: 1.08;
+  letter-spacing: -2px;
+}
+.identity h2 {
+  font-size: 18px;
+  margin: 6px 0 3px;
+}
+.identity .intro {
+  margin: 10px 0 6px;
+  line-height: 1.5;
+}
+.identity .desktop-break {
+  display: none;
+}
+.identity .ownership {
+  margin-top: 10px;
+  gap: 12px;
+  font-size: 14px;
+}
+.identity .ownership > div {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+}
+.identity .ownership-flow {
+  margin-top: 0 !important;
+}
+.identity .progression {
+  margin-top: 12px;
+  padding: 10px 0;
+  row-gap: 6px;
+}
+.identity .progression > span {
+  gap: 5px;
+}
+.identity .progression i {
+  margin: 0 7px 0 2px;
+}
+.command-navigation {
+  margin: 14px 0 12px;
+}
+.command-navigation > p {
+  margin-bottom: 8px;
+}
+.terminal-action {
+  min-height: 44px;
+  padding: 10px 12px;
+}
+.utility-actions {
+  margin-top: 6px;
+  gap: 4px 22px;
+}
+.utility-actions button,
+.utility-actions a {
+  min-height: 28px;
+}
+.input-line {
+  padding: 10px 0 4px;
+}
+.input-help {
+  margin-top: 4px;
+}
+@media (min-width: 760px) {
+  .command-navigation .action-grid:not(.directory-actions) {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (pointer: coarse) {
+  .utility-actions button,
+  .utility-actions a {
+    min-height: 40px;
+  }
+}
+@media (max-height: 500px) {
+  .site-header {
+    height: 36px;
+  }
+  .site-footer {
+    min-height: 30px;
+  }
+  .terminal {
+    margin-top: 0;
+  }
+}
