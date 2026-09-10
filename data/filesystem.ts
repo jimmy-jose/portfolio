@@ -72,7 +72,10 @@ export const filesystem: DirectoryNode = dir({
   ),
   skills: dir({
     'backend.txt': file(
-      'BACKEND / WEB\n\nGo\nREST APIs\nMicroservices\nNext.js\nReact\nLaravel\nSQL',
+      'BACKEND ENGINEERING\n\nGo\nREST APIs\nMicroservices\nLaravel\nSQL',
+    ),
+    'web.txt': file(
+      'WEB / FULL STACK\n\nNext.js\nReact\nTypeScript\nJavaScript',
     ),
     'mobile.txt': file(
       'MOBILE\n\nAndroid\nKotlin\nJetpack Compose\nKotlin Multiplatform\nMVVM',

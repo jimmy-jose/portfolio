@@ -17,11 +17,10 @@ export function SnakeLeaderboard({
     >
       <header>
         <strong>GLOBAL TOP 3</strong>
-        <span>VERCEL BLOB</span>
       </header>
       {status === 'loading' ? <p>SYNCING SCORES…</p> : null}
       {status === 'saving' && !entries.length ? <p>SAVING SCORE…</p> : null}
-      {status === 'unconfigured' ? <p>BLOB LINK REQUIRED</p> : null}
+      {status === 'unconfigured' ? <p>LEADERBOARD NOT CONNECTED</p> : null}
       {status === 'error' ? <p>LEADERBOARD OFFLINE</p> : null}
       {(status === 'ready' || status === 'saving') && entries.length ? (
         <ol>

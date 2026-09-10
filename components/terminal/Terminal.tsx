@@ -119,7 +119,7 @@ export function Terminal() {
               <>
                 <p className="session-meta">
                   SESSION 001 <span>•</span> KERALA, INDIA <span>•</span>{' '}
-                  WELCOME TO MY CORNER OF THE INTERNET
+                  PERSONAL NODE ONLINE
                 </p>
                 <noscript>
                   <style>

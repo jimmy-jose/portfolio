@@ -43,7 +43,7 @@ The global top three live in one private Vercel Blob. The browser talks to `/api
 3. Redeploy. Vercel supplies `BLOB_READ_WRITE_TOKEN` to the server automatically.
 4. For a working leaderboard during local development, run `npx vercel link`, then `npx vercel env pull .env.local` before `npm run dev`.
 
-Snake remains playable without Blob configuration and shows `BLOB LINK REQUIRED` in the leaderboard panel. The API stores only the three displayed names and scores. Because gameplay runs in the browser, a determined visitor can forge a score request; the server validates data shape and range, but the leaderboard is intentionally a lightweight portfolio feature rather than a cheat-proof competition service.
+Snake remains playable without Blob configuration and shows `LEADERBOARD NOT CONNECTED` in the leaderboard panel. The API stores only the three displayed names and scores. Because gameplay runs in the browser, a determined visitor can forge a score request; the server validates data shape and range, but the leaderboard is intentionally a lightweight portfolio feature rather than a cheat-proof competition service.
 
 ### Vercel Web Analytics
 
