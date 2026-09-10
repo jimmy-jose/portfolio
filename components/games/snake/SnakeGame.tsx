@@ -12,6 +12,16 @@ import type {
   SnakeGameState,
   SnakeStatus,
 } from '@/lib/games/snake/snakeTypes';
+import {
+  qualifiesForSnakeLeaderboard,
+  type SnakeLeaderboardEntry,
+  type SnakeLeaderboardStatus,
+} from '@/lib/games/snake/snakeLeaderboard';
+import {
+  loadGlobalSnakeLeaderboard,
+  saveGlobalSnakeScore,
+  SnakeLeaderboardNotConfiguredError,
+} from '@/lib/games/snake/clientSnakeLeaderboard';
 import { SnakeCanvas, type SnakeCanvasHandle } from './SnakeCanvas';
 import { SnakeControls } from './SnakeControls';
 import { SnakeGameOver } from './SnakeGameOver';
@@ -59,6 +69,10 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
   const canvas = useRef<SnakeCanvasHandle>(null);
   const panel = useRef<HTMLElement>(null);
   const [view, setView] = useState<GameView>(() => toView(initialGame));
+  const [leaderboard, setLeaderboard] = useState<SnakeLeaderboardEntry[]>([]);
+  const [leaderboardStatus, setLeaderboardStatus] =
+    useState<SnakeLeaderboardStatus>('loading');
+  const [scoreSaved, setScoreSaved] = useState(false);
 
   const publish = useCallback((state: SnakeGameState) => {
     setView(toView(state));
@@ -66,6 +80,7 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
   }, []);
   const start = useCallback(() => {
     game.current = createSnakeGame(Math.random, 'running');
+    setScoreSaved(false);
     publish(game.current);
   }, [publish]);
   const leave = useCallback(() => onExit(game.current.score), [onExit]);
@@ -81,9 +96,44 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
     };
     publish(game.current);
   }, [publish]);
+  const saveScore = useCallback(async (name: string) => {
+    setLeaderboardStatus('saving');
+    try {
+      const next = await saveGlobalSnakeScore(name, game.current.score);
+      setLeaderboard(next);
+      setLeaderboardStatus('ready');
+      setScoreSaved(true);
+    } catch (error) {
+      setLeaderboardStatus(
+        error instanceof SnakeLeaderboardNotConfiguredError
+          ? 'unconfigured'
+          : 'error',
+      );
+    }
+  }, []);
 
   useEffect(() => {
     panel.current?.focus();
+    let active = true;
+    const loadLeaderboard = async () => {
+      try {
+        const entries = await loadGlobalSnakeLeaderboard();
+        if (!active) return;
+        setLeaderboard(entries);
+        setLeaderboardStatus('ready');
+      } catch (error) {
+        if (!active) return;
+        setLeaderboardStatus(
+          error instanceof SnakeLeaderboardNotConfiguredError
+            ? 'unconfigured'
+            : 'error',
+        );
+      }
+    };
+    void loadLeaderboard();
+    return () => {
+      active = false;
+    };
   }, []);
   useEffect(() => {
     if (view.status !== 'running') return;
@@ -127,11 +177,16 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
   useEffect(() => {
     const handleKey = (event: KeyboardEvent) => {
       const direction = directionKeys[event.key];
+      const target = event.target instanceof HTMLElement ? event.target : null;
+      const editing = !!target?.closest(
+        'input, textarea, select, [contenteditable="true"]',
+      );
       if (event.key === 'Escape') {
         event.preventDefault();
         leave();
         return;
       }
+      if (editing) return;
       if (
         event.key === 'Enter' &&
         !(event.target instanceof HTMLButtonElement) &&
@@ -170,7 +225,12 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
     >
       <SnakeHud {...view} />
       {view.status === 'idle' ? (
-        <SnakeStartScreen onStart={start} onExit={leave} />
+        <SnakeStartScreen
+          onStart={start}
+          onExit={leave}
+          leaderboard={leaderboard}
+          leaderboardStatus={leaderboardStatus}
+        />
       ) : (
         <div className="snake-play-area">
           <div className="snake-board-frame">
@@ -191,6 +251,15 @@ export function SnakeGame({ onExit }: { onExit: (score: number) => void }) {
               score={view.score}
               length={view.length}
               reason={view.reason}
+              leaderboard={leaderboard}
+              leaderboardStatus={leaderboardStatus}
+              qualifies={
+                leaderboardStatus !== 'loading' &&
+                leaderboardStatus !== 'unconfigured' &&
+                qualifiesForSnakeLeaderboard(view.score, leaderboard)
+              }
+              scoreSaved={scoreSaved}
+              onSaveScore={saveScore}
               onRestart={start}
               onExit={leave}
             />

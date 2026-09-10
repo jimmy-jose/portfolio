@@ -1,6 +1,6 @@
 # Jimmy Jose — Terminal Portfolio
 
-Next.js App Router, React, strict TypeScript, Tailwind CSS, Motion for React and Canvas 2D. Static export; no terminal input is ever sent to a server or operating-system shell.
+Next.js App Router, React, strict TypeScript, Tailwind CSS, Motion for React, Canvas 2D, Vercel Blob and Vercel Web Analytics. Terminal commands are parsed entirely in the browser and are never sent to an operating-system shell. Only Snake leaderboard reads and score submissions use the server.
 
 ## Development
 
@@ -10,9 +10,10 @@ npm run dev
 npm test
 npm run typecheck
 npm run build
+npm start
 ```
 
-`out/` is the deployable static site. Serve that directory with any static web host. `next start` is not applicable to static exports.
+`npm run dev` starts the site at `http://localhost:3000`. A production build uses the normal Next.js server output and can run with `npm start` after `npm run build`.
 
 ## Content configuration
 
@@ -32,6 +33,21 @@ npm run build
 The session hook owns output history and effects. `ExperienceViewer` is a lazy-loaded, accessible dialog driven by a project ID, providing a boundary for a future Three.js scene renderer. It currently uses only DOM and Motion. Project features describe the supplied brief and do not claim additional features or impact metrics.
 
 `play snake` launches a Canvas-based game inside the terminal session without changing routes. The pure engine in `lib/games/snake/` owns movement, growth, collision, food placement and speed. React manages the start, pause and game-over screens, while Canvas draws each fixed-step update without rerendering the portfolio. Keyboard, swipe and touch-button controls are scoped to game mode; Escape returns to the terminal and prints the final score.
+
+### Global Snake leaderboard
+
+The global top three live in one private Vercel Blob. The browser talks to `/api/snake-leaderboard`; the Blob credential stays inside the server-side route. Writes use the current blob ETag and retry when another score wins the race, so concurrent submissions do not overwrite a newer leaderboard. The API rejects malformed payloads and scores beyond the 20×20 board maximum. Scores that do not enter the top three do not trigger a Blob write.
+
+1. Import this repository into Vercel or link it to an existing Vercel project.
+2. In the project dashboard, open **Storage**, create a **Blob** store and connect it to this project.
+3. Redeploy. Vercel supplies `BLOB_READ_WRITE_TOKEN` to the server automatically.
+4. For a working leaderboard during local development, run `npx vercel link`, then `npx vercel env pull .env.local` before `npm run dev`.
+
+Snake remains playable without Blob configuration and shows `BLOB LINK REQUIRED` in the leaderboard panel. The API stores only the three displayed names and scores. Because gameplay runs in the browser, a determined visitor can forge a score request; the server validates data shape and range, but the leaderboard is intentionally a lightweight portfolio feature rather than a cheat-proof competition service.
+
+### Vercel Web Analytics
+
+`@vercel/analytics` is mounted in `app/layout.tsx`, so page views and route changes are tracked automatically. Enable Web Analytics from the project’s **Analytics** section in the Vercel dashboard, then redeploy to start collecting data.
 
 The page stays fixed to the viewport. The terminal fills the space between the site header and footer; its chrome stays fixed while its content scrolls internally. Output auto-scroll is scoped to that content area and moves to the bottom as soon as startup finishes, keeping the input cursor visible. The profile and navigation use compact spacing to fit together on typical desktop screens. The scroll region is keyboard-focusable and adapts to smaller screens. Startup replays on each page load: CRT power-on → session header → `whoami` typing → Enter → Matrix content reveal → clickable controls. The sequence lasts 2.85 seconds, can be skipped by a key or pointer, and is bypassed for reduced motion. The block cursor tracks the real input selection and horizontal scroll while editing. Matrix rain fills the page behind the terminal and remains subtly visible through its translucent CRT glass. The canvas caps device-pixel ratio, draws at a low frame rate, reduces density on mobile, stops when hidden and respects reduced motion. Effects can also be turned off. All listeners, timers, canvas frames and optional WebMCP registration clean up on unmount.
 

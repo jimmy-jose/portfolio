@@ -13,6 +13,15 @@ import {
   queueDirection,
 } from '../lib/games/snake/snakeEngine';
 import type { SnakeGameState } from '../lib/games/snake/snakeTypes';
+import {
+  MAX_PLAYER_NAME_LENGTH,
+  MAX_SNAKE_SCORE,
+  parseSnakeLeaderboard,
+  parseSnakeScoreSubmission,
+  qualifiesForSnakeLeaderboard,
+  rankSnakeScores,
+  sanitizePlayerName,
+} from '../lib/games/snake/snakeLeaderboard';
 
 function runningState(changes: Partial<SnakeGameState> = {}): SnakeGameState {
   return {
@@ -102,4 +111,57 @@ void test('speed increases every five points and stays playable', () => {
   assert.equal(calculateSpeed(4), INITIAL_SPEED);
   assert.equal(calculateSpeed(5), INITIAL_SPEED - 8);
   assert.equal(calculateSpeed(10_000), MIN_SPEED);
+});
+
+void test('leaderboard sanitizes names and keeps the top three scores', () => {
+  assert.equal(sanitizePlayerName('  J!mmy   J@se  '), 'Jmmy Jse');
+  assert.equal(sanitizePlayerName(''), 'ANON');
+  assert.equal(
+    sanitizePlayerName('abcdefghijklmnop').length,
+    MAX_PLAYER_NAME_LENGTH,
+  );
+  assert.deepEqual(
+    rankSnakeScores([
+      { name: 'Fourth', score: 2 },
+      { name: 'First', score: 20 },
+      { name: 'Third', score: 5.9 },
+      { name: 'Second', score: 10 },
+    ]),
+    [
+      { name: 'First', score: 20 },
+      { name: 'Second', score: 10 },
+      { name: 'Third', score: 5 },
+    ],
+  );
+});
+
+void test('leaderboard qualification compares against third place', () => {
+  const scores = rankSnakeScores([
+    { name: 'One', score: 10 },
+    { name: 'Two', score: 8 },
+    { name: 'Three', score: 5 },
+  ]);
+  assert.equal(qualifiesForSnakeLeaderboard(6, scores), true);
+  assert.equal(qualifiesForSnakeLeaderboard(5, scores), false);
+  assert.equal(qualifiesForSnakeLeaderboard(0, []), true);
+});
+
+void test('leaderboard safely parses stored entries and score submissions', () => {
+  assert.deepEqual(
+    parseSnakeLeaderboard([
+      { name: 'Jimmy', score: MAX_SNAKE_SCORE + 20 },
+      { name: 'Bad', score: Number.NaN },
+      { name: 42, score: 10 },
+    ]),
+    [{ name: 'Jimmy', score: MAX_SNAKE_SCORE }],
+  );
+  assert.deepEqual(parseSnakeScoreSubmission({ name: ' J! ', score: 12 }), {
+    name: 'J',
+    score: 12,
+  });
+  assert.equal(parseSnakeScoreSubmission({ name: 'J', score: 12.5 }), null);
+  assert.equal(
+    parseSnakeScoreSubmission({ name: 'J', score: MAX_SNAKE_SCORE + 1 }),
+    null,
+  );
 });

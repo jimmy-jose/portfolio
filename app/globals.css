@@ -1589,6 +1589,96 @@ pre {
   margin-top: 16px;
   color: #627866;
 }
+.snake-leaderboard {
+  margin-top: 20px;
+  border: 1px solid #263c29;
+  background: #071009b8;
+  font-size: 11px;
+}
+.snake-leaderboard header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  border-bottom: 1px solid #263c29;
+  color: #799179;
+  letter-spacing: 1px;
+}
+.snake-leaderboard header strong {
+  color: #a9d893;
+}
+.snake-leaderboard ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.snake-leaderboard li {
+  display: grid;
+  grid-template-columns: 30px 1fr auto;
+  gap: 10px;
+  padding: 6px 10px;
+  border-top: 1px solid #1c2d1f;
+}
+.snake-leaderboard li:first-child {
+  border-top: 0;
+}
+.snake-leaderboard li > span:first-child {
+  color: #58735a;
+}
+.snake-leaderboard li > span:last-child,
+.snake-leaderboard li strong {
+  color: #c1e8ae;
+}
+.snake-leaderboard > p {
+  margin: 0;
+  padding: 9px 10px;
+  color: #718374;
+  letter-spacing: 0.5px;
+}
+.snake-score-form {
+  margin-top: 15px;
+  padding: 11px;
+  border: 1px solid #416044;
+  background: #0b160dc2;
+}
+.snake-score-form label,
+.snake-score-form small {
+  display: block;
+  color: #89a58a;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+}
+.snake-score-form > div {
+  display: flex;
+  gap: 7px;
+  margin: 7px 0 4px;
+}
+.snake-score-form input {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #365139;
+  border-radius: 0;
+  background: #050a06;
+  color: var(--primary);
+  padding: 8px 9px;
+  font: inherit;
+}
+.snake-score-form button {
+  flex: none;
+  border: 1px solid #4f754d;
+  background: #142417;
+  color: #c0eaaa;
+  padding: 7px 10px;
+  font-size: 10px;
+}
+.snake-score-form button:disabled,
+.snake-score-form input:disabled {
+  cursor: wait;
+  opacity: 0.58;
+}
+.snake-score-saved {
+  color: var(--primary) !important;
+}
 .snake-play-area {
   flex: 1;
   min-height: 0;

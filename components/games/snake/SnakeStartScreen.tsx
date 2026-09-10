@@ -1,9 +1,19 @@
+import type {
+  SnakeLeaderboardEntry,
+  SnakeLeaderboardStatus,
+} from '@/lib/games/snake/snakeLeaderboard';
+import { SnakeLeaderboard } from './SnakeLeaderboard';
+
 export function SnakeStartScreen({
   onStart,
   onExit,
+  leaderboard,
+  leaderboardStatus,
 }: {
   onStart: () => void;
   onExit: () => void;
+  leaderboard: SnakeLeaderboardEntry[];
+  leaderboardStatus: SnakeLeaderboardStatus;
 }) {
   return (
     <section className="snake-screen snake-start-screen">
@@ -28,6 +38,7 @@ export function SnakeStartScreen({
         </button>
       </div>
       <small>Press Enter to start.</small>
+      <SnakeLeaderboard entries={leaderboard} status={leaderboardStatus} />
     </section>
   );
 }
