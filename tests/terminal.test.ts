@@ -6,6 +6,7 @@ import { parseCommand } from '../lib/terminal/commandParser';
 import { autocomplete } from '../lib/terminal/autocomplete';
 import { navigationCommands } from '../lib/terminal/navigation';
 import { filesystem } from '../data/filesystem';
+import { progression } from '../data/portfolio';
 import { pickRandomFact, randomFacts } from '../data/randomFacts';
 import { lightModeRefusals, pickLightModeRefusal } from '../data/terminalQuips';
 import type { DirectoryNode, TerminalContext } from '../lib/terminal/types';
@@ -156,6 +157,7 @@ void test('autocomplete supports commands and relative, absolute and home paths'
 });
 void test('identity, lifecycle and easter eggs use predictable results', () => {
   assert.equal(executeCommand('whoami', root).view, 'identity');
+  assert.equal(progression[0], 'Backend systems');
   assert.equal(executeCommand('clear', root).effect, 'clear');
   assert.equal(executeCommand('exit', root).effect, 'exit');
   assert.equal(executeCommand('matrix', root).effect, 'matrix');

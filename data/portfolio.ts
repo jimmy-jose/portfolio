@@ -5,10 +5,10 @@ export const contact = {
   resume: '',
 };
 export const progression = [
+  'Backend systems',
   'Mobile',
   'Product engineering',
   'Cloud / DevOps',
-  'Backend systems',
   'AI infrastructure',
   'End-to-end ownership',
 ];
