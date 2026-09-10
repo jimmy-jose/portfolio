@@ -38,11 +38,11 @@ function RichResult({ result }: { result: CommandResult }) {
   if (result.view === 'impact')
     return (
       <div className="impact-output">
-        <p className="eyebrow">SPENMO / PRODUCTION RELIABILITY</p>
-        <h3>Fewer crashes. More confidence.</h3>
+        <p className="eyebrow">SPENMO / ANDROID ENGINEERING</p>
+        <h3>One engineer. Production ownership.</h3>
         <div
           className="impact-chart"
-          aria-label="Crash rate reduced from approximately 4 percent to less than 1 percent"
+          aria-label="Crash rate reduced from approximately 4 percent to less than 1 percent through Android crash analysis and production fixes"
         >
           <div>
             <span>BEFORE</span>
@@ -68,10 +68,13 @@ function RichResult({ result }: { result: CommandResult }) {
             </div>
           </div>
         </div>
-        <p>Improved stability through crash analysis and production fixes.</p>
         <p>
-          Improved backend response times by removing redundant reads and
-          optimizing request processing.
+          Built and maintained the Spenmo Android app as the solo Android
+          engineer, owning releases from implementation through production.
+        </p>
+        <p>
+          Crash analysis and production fixes reduced the crash rate from ~4% to
+          less than 1%.
         </p>
       </div>
     );
@@ -84,9 +87,12 @@ function RichResult({ result }: { result: CommandResult }) {
           <br />
           to intelligent workflows<span className="accent">.</span>
         </h3>
-        <p>Owned the AI service and its infrastructure.</p>
+        <p>
+          Owned the AI service that interfaced with LLMs for every product AI
+          feature.
+        </p>
         <div className="ai-pipeline">
-          {['Architecture', 'Development', 'Deployment', 'Maintenance'].map(
+          {['Architecture', 'LLM integration', 'Performance', 'Production'].map(
             (step, index) => (
               <motion.div
                 key={step}
@@ -101,7 +107,9 @@ function RichResult({ result }: { result: CommandResult }) {
             ),
           )}
         </div>
-        <p className="accent">↳ LLM-powered workflows</p>
+        <p className="accent">
+          ↳ Improved performance across the AI request path.
+        </p>
       </div>
     );
   return result.text ? (

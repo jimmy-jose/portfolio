@@ -96,6 +96,14 @@ void test('project open is separate from file reading', () => {
     'resume',
   );
 });
+void test('crash impact is presented through the Android entry', () => {
+  const android = executeCommand('cat /experience/spenmo/android.txt', root);
+  const impact = executeCommand('cat /experience/spenmo/impact.txt', root);
+  assert.equal(android.view, 'impact');
+  assert.equal(impact.view, undefined);
+  assert.match(android.text ?? '', /solo Android engineer/);
+  assert.doesNotMatch(impact.text ?? '', /crash/i);
+});
 void test('play lists games and launches snake through a game result', () => {
   assert.equal(
     executeCommand('play', root).text,

@@ -25,32 +25,32 @@ export const filesystem: DirectoryNode = dir({
         'SPENMO\nSenior Software Engineer · Bangalore\nOct 2019 – Present\n\nAI-enabled B2B FinTech SaaS platform for managing and tracking business expenses.\n\nEngineering across backend systems, AI infrastructure and Android. Ownership from architecture to production.',
       ),
       'backend.txt': file(
-        'BACKEND ENGINEERING\nOct 2021 – Present\n\nBuilt and maintained:\n→ REST APIs\n→ background jobs\n→ Go microservices\n\nWorked across development, deployment and production systems.',
+        'BACKEND ENGINEERING\nOct 2021 – Present\n\nBuilt and maintained:\n→ REST APIs\n→ background jobs\n→ Go microservices\n\nOwned backend systems across development, deployment and production.\n\nAlso owned the AI service that interfaced with LLMs for every product AI feature, improving performance across the AI request path.',
       ),
       'ai.txt': file(
-        'AI INFRASTRUCTURE\n\nOwned the AI service and its infrastructure.\n\n→ architecture\n→ development\n→ deployment\n→ maintenance\n→ LLM-powered workflows',
+        'AI INFRASTRUCTURE\n\nOwned the AI service that interfaced with LLMs for every product AI feature.\n\n→ architecture\n→ LLM integrations\n→ development\n→ deployment\n→ performance tuning\n→ maintenance\n\nImproved performance across the AI request path and kept the service reliable in production.',
         'ai',
       ),
       'android.txt': file(
-        'ANDROID ENGINEERING\nOct 2019 – Present\n\nOwned Android development across:\n→ design\n→ development\n→ testing\n→ deployment\n→ production releases\n\nKotlin · MVVM',
+        'ANDROID ENGINEERING\nOct 2019 – Present\n\nBuilt and maintained the Spenmo Android app as the solo Android engineer, owning releases from implementation through production.\n\nOwned Android development across:\n→ design\n→ development\n→ testing\n→ deployment\n→ production releases\n\nKotlin · MVVM',
+        'impact',
       ),
       'impact.txt': file(
-        'SYSTEM IMPACT\n\nCrash rate improved from ~4% to <1% through crash analysis and production fixes.\n\nAlso improved backend response times by removing redundant reads and optimizing request processing.',
-        'impact',
+        'SYSTEM IMPACT\n\nImproved backend response times by removing redundant reads and optimizing request processing.\n\nProduction improvements focused on faster, more reliable systems.',
       ),
     }),
     zemoso: dir({
       'overview.txt': file(
-        'ZeMoSo\nSenior Software Engineer · Hyderabad\nNov 2016 – Sept 2019\n\nZero-to-one product engineering consultancy.\n\nFrom mobile product development to deploying cloud infrastructure.',
+        'ZeMoSo\nSenior Software Engineer · Hyderabad\nNov 2016 – Sept 2019\n\nZero-to-one product engineering consultancy.\n\nBuilt and maintained both Android applications as the solo Android engineer, from product development through production releases.\n\nFrom mobile product development to deploying cloud infrastructure.',
       ),
       'drone-applications.txt': file(
-        'FIRST RESPONDER & PILOT\nDrone Applications\nAug 2018 – Sept 2019\n\nBuilt Android applications for:\n→ drone flight planning\n→ geographical no-fly-zone management\n\nFocus: maintainability, unit testing and production-quality Android engineering.',
+        'FIRST RESPONDER & PILOT\nDrone Applications\nAug 2018 – Sept 2019\n\nBuilt and maintained this Android app as the solo Android engineer.\n\nBuilt Android applications for:\n→ drone flight planning\n→ geographical no-fly-zone management\n\nFocus: maintainability, unit testing and production-quality Android engineering.',
       ),
       'devops.txt': file(
         'DEVOPS\nKubernetes + Docker\n\nDeployed a containerised .NET FaaS service to AWS and GCP.\n\nDocker · Kubernetes · AWS · GCP · Kubernetes namespaces',
       ),
       'mindhive.txt': file(
-        'MINDHIVE\n\nPrivacy-focused social networking application.\n\nWorked across:\n→ development\n→ testing\n→ deployment\n\nJava · Kotlin · Android',
+        'MINDHIVE\n\nPrivacy-focused social networking application.\n\nBuilt and maintained this Android app as the solo Android engineer.\n\nWorked across:\n→ development\n→ testing\n→ deployment\n\nJava · Kotlin · Android',
       ),
     }),
   }),
