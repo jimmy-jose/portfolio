@@ -129,6 +129,24 @@ input:focus-visible {
   align-items: center;
   gap: 10px;
 }
+.client-work-link {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 44px;
+  color: var(--primary);
+  white-space: nowrap;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+}
+.client-work-link:hover {
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.client-work-link + .connection {
+  margin-left: 12px;
+}
 .connection i,
 .status-dot {
   display: inline-block;

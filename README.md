@@ -17,6 +17,7 @@ npm start
 
 ## Content configuration
 
+- `data/references.ts`: the `/references` case studies, confirmed technology stacks, screenshot provenance, testimonials and professional references. All page copy is rendered on the server.
 - `data/portfolio.ts`: project stories and contact configuration.
 - `data/randomFacts.ts`: personal details printed by the `random` command.
 - `data/terminalQuips.ts`: randomized light-mode refusal messages.
@@ -27,6 +28,16 @@ npm start
 - The email comes from the supplied brief. No phone number is exposed.
 
 ## Architecture
+
+### Client work and references
+
+`/references` is a separate editorial page, linked from the homepage header and terminal navigation. It uses a route-scoped light theme, self-hosted Geist and EB Garamond, the existing shadcn button and native email links. Its normal document scrolling does not change the terminal’s fixed viewport. All animation is limited to short hover transitions and smooth anchor navigation; reduced motion disables both.
+
+Sample testimonials are clearly labelled and visible only under `npm run dev`. Production builds exclude draft quotes and their attribution from both HTML and client payloads. To publish a testimonial, replace its text and attribution with the client’s exact approved content and set its `status` to `approved`. Optional photographs and logos also need publication approval. Testimonial and reference approvals are independent: naming a reference needs its own `approved` status, and publishing a contact method additionally requires `contact.publicationApproved: true`. Without that permission the contact value is removed from the public model and the page offers an introduction on request.
+
+Thekken screenshots are real public captures from 2026-10-12, stored as WebP with lazy, responsive Next.js image optimization. They retain the live site’s empty listing states. JDA uses an editorial privacy cover, not a reconstructed interface. Add approved anonymized screenshots to JDA’s `screenshots` array with `publication: 'client-approved'` to replace it. Editorial notes record outstanding scope and outcome confirmations; they never enter the public content model. No client-impact metrics are claimed.
+
+The route has its own canonical metadata, Open Graph image, Twitter preview and CollectionPage/CreativeWork structured data. `tests/references.test.ts` covers consent boundaries, draft exclusion, safe reference links and screenshot integrity.
 
 `parseCommand` tokenizes quoted arguments without evaluating anything. The pure `executeCommand` function dispatches to a registry of small handlers. Paths resolve only within the in-memory filesystem, with own-property checks to prevent prototype traversal. Both clickable navigation and typed commands call this engine. Shell operators are literal text, not shell syntax; chain commands with separate submissions.
 

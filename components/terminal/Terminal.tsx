@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
+import Link from 'next/link';
 import { MotionConfig } from 'motion/react';
 import { TerminalPrompt } from './TerminalPrompt';
 import { TerminalBoot } from './TerminalBoot';
@@ -83,6 +84,9 @@ export function Terminal() {
           <span className="header-label">
             JIMMY.DEV <span>/ PERSONAL MAINFRAME</span>
           </span>
+          <Link href="/references" className="client-work-link">
+            Client Work <span aria-hidden="true">↗</span>
+          </Link>
           <span className="connection">
             <i /> {session.exited ? 'SESSION CLOSED' : 'CONNECTION ESTABLISHED'}
           </span>

@@ -1,5 +1,6 @@
 'use client';
 import { motion } from 'motion/react';
+import Link from 'next/link';
 import { getNode, resolvePath } from '@/lib/terminal/pathResolver';
 import { navigationCommands } from '@/lib/terminal/navigation';
 import { contact } from '@/data/portfolio';
@@ -52,6 +53,7 @@ export function CommandButtons({
         ))}
       </div>
       <div className="utility-actions">
+        {root && <Link href="/references">CLIENT WORK ↗</Link>}
         {!root && (
           <button
             onClick={() =>
