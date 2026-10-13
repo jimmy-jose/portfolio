@@ -5,6 +5,7 @@ import type {
   PublishedTestimonial,
 } from '@/lib/references';
 import { TestimonialQuote } from './ClientVoices';
+import { CaseStudyDisclosure } from './CaseStudyDisclosure';
 
 function ProductPreview({ project }: { project: PublishedCaseStudy }) {
   const [desktop, mobile] = project.screenshots;
@@ -14,7 +15,7 @@ function ProductPreview({ project }: { project: PublishedCaseStudy }) {
         <div className="ref-private-cover">
           <span className="ref-cover-kicker">Software for the working day</span>
           <div className="ref-cover-name">
-            {project.name}
+            {project.shortName ?? project.name}
             <span>Practice management</span>
           </div>
           <div className="ref-private-note">
@@ -103,66 +104,67 @@ export function CaseStudy({
       className={`ref-case-study ref-case-${project.id}`}
       aria-labelledby={`${project.id}-heading`}
     >
-      <div className="ref-case-main">
-        <div className="ref-case-intro">
-          <p className="ref-eyebrow">{project.category}</p>
-          <h3 id={`${project.id}-heading`}>
-            {project.name}
-            <span className="ref-name-period">.</span>
-          </h3>
-          <p className="ref-case-title">{project.title}</p>
-          <p className="ref-case-summary">{project.summary}</p>
-          <dl className="ref-project-facts">
-            <div>
-              <dt>Client</dt>
-              <dd>{project.client}</dd>
-            </div>
-            <div>
-              <dt>My contribution</dt>
-              <dd>{project.contribution}</dd>
-            </div>
-            {project.technologies.length > 0 && (
+      <CaseStudyDisclosure
+        id={project.id}
+        name={project.name}
+        category={project.category}
+        title={project.title}
+      >
+        <div className="ref-case-main">
+          <div className="ref-case-intro">
+            <p className="ref-case-summary">{project.summary}</p>
+            <dl className="ref-project-facts">
               <div>
-                <dt>Built with</dt>
-                <dd>{project.technologies.join(' / ')}</dd>
+                <dt>Client</dt>
+                <dd>{project.client}</dd>
               </div>
+              <div>
+                <dt>My contribution</dt>
+                <dd>{project.contribution}</dd>
+              </div>
+              {project.technologies.length > 0 && (
+                <div>
+                  <dt>Built with</dt>
+                  <dd>{project.technologies.join(' / ')}</dd>
+                </div>
+              )}
+            </dl>
+            {project.website ? (
+              <a
+                className="ref-text-link ref-visit-link"
+                href={project.website}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit {new URL(project.website).hostname}{' '}
+                <ArrowUpRight size={16} strokeWidth={1.6} aria-hidden="true" />
+                <span className="sr-only"> (opens in a new tab)</span>
+              </a>
+            ) : (
+              <span className="ref-private-label">
+                <LockKeyhole size={13} strokeWidth={1.6} aria-hidden="true" />{' '}
+                Private client application
+              </span>
             )}
-          </dl>
-          {project.website ? (
-            <a
-              className="ref-text-link ref-visit-link"
-              href={project.website}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Visit {new URL(project.website).hostname}{' '}
-              <ArrowUpRight size={16} strokeWidth={1.6} aria-hidden="true" />
-              <span className="sr-only"> (opens in a new tab)</span>
-            </a>
-          ) : (
-            <span className="ref-private-label">
-              <LockKeyhole size={13} strokeWidth={1.6} aria-hidden="true" />{' '}
-              Private client application
-            </span>
-          )}
+          </div>
+          <ProductPreview project={project} />
         </div>
-        <ProductPreview project={project} />
-      </div>
-      <dl className="ref-case-story">
-        <div>
-          <dt>The challenge</dt>
-          <dd>{project.challenge}</dd>
-        </div>
-        <div>
-          <dt>The solution</dt>
-          <dd>{project.solution}</dd>
-        </div>
-        <div>
-          <dt>The outcome</dt>
-          <dd>{project.outcome}</dd>
-        </div>
-      </dl>
-      {testimonial && <TestimonialQuote item={testimonial} compact />}
+        <dl className="ref-case-story">
+          <div>
+            <dt>The challenge</dt>
+            <dd>{project.challenge}</dd>
+          </div>
+          <div>
+            <dt>The solution</dt>
+            <dd>{project.solution}</dd>
+          </div>
+          <div>
+            <dt>The outcome</dt>
+            <dd>{project.outcome}</dd>
+          </div>
+        </dl>
+        {testimonial && <TestimonialQuote item={testimonial} compact />}
+      </CaseStudyDisclosure>
     </article>
   );
 }

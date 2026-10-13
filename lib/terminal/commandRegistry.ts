@@ -112,6 +112,13 @@ export const commands: Record<string, CommandHandler> = {
   tree,
   play,
   tech: () => ({ text: formatTechStack() }),
+  references: (args) =>
+    args.length
+      ? fail('Usage: references')
+      : {
+          text: 'Opening client work and references...',
+          effect: 'references',
+        },
   pwd: (_, context) => ({ text: context.cwd }),
   echo: (args) => ({ text: args.join(' ') }),
   clear: () => ({ effect: 'clear' }),
@@ -122,7 +129,7 @@ export const commands: Record<string, CommandHandler> = {
         .join('\n') || 'No commands yet.',
   }),
   help: () => ({
-    text: 'AVAILABLE COMMANDS\n\nwhoami             Meet Jimmy\nrandom             Reveal a random Jimmy fact\ntech               Show this portfolio’s tech stack\nlightmode          Request the forbidden theme\nls [-la] [path]     List files and directories\ncd <directory>     Move around (.., / and ~ work)\npwd                Show your location\ncat <file>         Read a file\nopen <target>      Explore a project or open a file\ntree               Explore the filesystem\necho <text>        Print text\nhistory            Show previous commands\nclear              Clear the screen\nexit               Close this session\n\nFUN\n\nplay               List installed games\nplay snake         Launch snake.exe\n\n↑ ↓ command history · Tab autocomplete\nCtrl+L clear · Escape dismiss suggestions\n\nClick any directory or action to explore.\nCurious? Try coffee, sudo or matrix.',
+    text: 'AVAILABLE COMMANDS\n\nwhoami             Meet Jimmy\nrandom             Reveal a random Jimmy fact\ntech               Show this portfolio’s tech stack\nreferences         View client work and references\nlightmode          Request the forbidden theme\nls [-la] [path]     List files and directories\ncd <directory>     Move around (.., / and ~ work)\npwd                Show your location\ncat <file>         Read a file\nopen <target>      Explore a project or open a file\ntree               Explore the filesystem\necho <text>        Print text\nhistory            Show previous commands\nclear              Clear the screen\nexit               Close this session\n\nFUN\n\nplay               List installed games\nplay snake         Launch snake.exe\n\n↑ ↓ command history · Tab autocomplete\nCtrl+L clear · Escape dismiss suggestions\n\nClick any directory or action to explore.\nCurious? Try coffee, sudo or matrix.',
   }),
   exit: () => ({
     text: 'logout\n\nConnection to jimmy.dev closed.',

@@ -1,10 +1,12 @@
 'use client';
 import { useCallback, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useTerminalPlayback } from './useTerminalPlayback';
 import { executeCommand } from '@/lib/terminal/executeCommand';
 import type { SessionEntry, TerminalContext } from '@/lib/terminal/types';
 import type { GameId } from '@/lib/games/gameLauncher';
 export function useTerminalSession() {
+  const router = useRouter();
   const context = useRef<TerminalContext>({ cwd: '/', history: [] });
   const sequence = useRef(0);
   const [entries, setEntries] = useState<SessionEntry[]>([]);
@@ -35,26 +37,30 @@ export function useTerminalSession() {
     );
     return entry;
   }, []);
-  const complete = useCallback((entry: SessionEntry) => {
-    const { result } = entry;
-    if (result.effect === 'exit') setExited(true);
-    if (result.effect === 'matrix') setIntense((previous) => !previous);
-    if (result.project) setProject(result.project);
-    if (result.game) {
-      setProject(null);
-      setGame(result.game);
-    }
-    setAnnouncement(
-      result.text ??
-        (result.entries
-          ? result.entries.map((item) => item.name).join(', ')
-          : result.view === 'identity'
-            ? 'Jimmy Jose. Senior Software Engineer. 10 years building production software.'
-            : result.cwd
-              ? `Current directory: ${result.cwd}`
-              : 'Screen cleared.'),
-    );
-  }, []);
+  const complete = useCallback(
+    (entry: SessionEntry) => {
+      const { result } = entry;
+      if (result.effect === 'exit') setExited(true);
+      if (result.effect === 'matrix') setIntense((previous) => !previous);
+      if (result.effect === 'references') router.push('/references');
+      if (result.project) setProject(result.project);
+      if (result.game) {
+        setProject(null);
+        setGame(result.game);
+      }
+      setAnnouncement(
+        result.text ??
+          (result.entries
+            ? result.entries.map((item) => item.name).join(', ')
+            : result.view === 'identity'
+              ? 'Jimmy Jose. Senior Software Engineer. 10 years building production software.'
+              : result.cwd
+                ? `Current directory: ${result.cwd}`
+                : 'Screen cleared.'),
+      );
+    },
+    [router],
+  );
   const getCwd = useCallback(() => context.current.cwd, []);
   const playback = useTerminalPlayback({ prepare, complete, getCwd });
   // Startup already types its command; commit through the same engine once.

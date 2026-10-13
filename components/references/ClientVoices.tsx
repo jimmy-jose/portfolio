@@ -14,9 +14,6 @@ export function TestimonialQuote({
 }) {
   return (
     <figure className={compact ? 'ref-quote ref-quote-compact' : 'ref-quote'}>
-      {item.status === 'draft' && (
-        <p className="ref-draft-label">Draft testimonial · sample copy</p>
-      )}
       <blockquote>
         <p>“{item.quote}”</p>
       </blockquote>
@@ -62,12 +59,6 @@ export function ClientVoices({ items }: { items: PublishedTestimonial[] }) {
     >
       <p className="ref-eyebrow">The working relationship</p>
       <h2 id="client-words-heading">Words from clients.</h2>
-      {items.some((item) => item.status === 'draft') && (
-        <p className="ref-draft-notice">
-          Development preview: these are sample testimonials, not client
-          feedback. Drafts are hidden in production.
-        </p>
-      )}
       <div className="ref-voices-grid">
         {items.map((item) => (
           <div key={item.projectId}>

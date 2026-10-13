@@ -124,6 +124,22 @@ void test('tech reports the portfolio stack and appears in help', () => {
   );
   assert.deepEqual(autocomplete('tec', '/'), ['tech ']);
 });
+void test('references opens client work from any directory and is discoverable', () => {
+  for (const cwd of ['/', '/projects/rival']) {
+    const result = executeCommand('references', { cwd, history: [] });
+    assert.equal(result.effect, 'references');
+    assert.equal(result.error, undefined);
+    assert.equal(result.cwd, undefined);
+  }
+  assert.match(
+    executeCommand('help', root).text ?? '',
+    /references\s+View client work and references/,
+  );
+  assert.deepEqual(autocomplete('ref', '/'), ['references ']);
+  const invalid = executeCommand('references unexpected', root);
+  assert.equal(invalid.error, true);
+  assert.equal(invalid.effect, undefined);
+});
 void test('click navigation runs the same commands as typed navigation', () => {
   let context = root;
   const commands = navigationCommands('/experience/spenmo');

@@ -17,12 +17,19 @@ import {
 } from '../lib/references';
 
 void test('unapproved client feedback and identities are absent from production content', () => {
-  assert.deepEqual(publishedTestimonials(testimonials), []);
+  const drafts = testimonials.map((item) => ({
+    ...item,
+    status: 'draft' as const,
+  }));
+  assert.deepEqual(publishedTestimonials(drafts), []);
+  assert.deepEqual(
+    publishedTestimonials(testimonials).map((item) => item.projectId),
+    ['jda', 'thekken'],
+  );
   assert.deepEqual(publishedReferences(clientReferences), []);
-  assert.ok(
-    publishedTestimonials(testimonials, true).every(
-      (item) => item.status === 'draft',
-    ),
+  assert.equal(
+    publishedTestimonials(testimonials, true).length,
+    testimonials.length,
   );
 });
 
@@ -150,8 +157,25 @@ void test('published screenshots exist locally with dimensions and source proven
   assert.deepEqual(
     caseStudies.map((project) => project.technologies),
     [
-      ['Next.js', 'MySQL', 'Cloudflare R2'],
-      ['Next.js', 'MySQL', 'Cloudflare R2'],
+      [
+        'Next.js App Router with TypeScript',
+        'React 19 and Tailwind CSS',
+        'Turso/libSQL with Drizzle ORM',
+        'Better Auth for authentication',
+        'S3-compatible private storage for files',
+        'Vitest and Playwright for testing',
+        'Vercel for deployment',
+      ],
+      [
+        'Next.js 16 + React 19',
+        'TypeScript 5',
+        'Tailwind CSS 4 + shadcn/ui',
+        'TiDB Cloud + Drizzle ORM',
+        'Better Auth',
+        'Cloudflare R2',
+        'Resend',
+        'Vercel + Analytics',
+      ],
     ],
   );
 });

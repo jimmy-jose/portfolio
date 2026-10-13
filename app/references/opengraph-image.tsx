@@ -67,7 +67,7 @@ export default async function OpenGraphImage() {
           color: '#5e685f',
         }}
       >
-        <span>JDA practice management / Thekken local discovery</span>
+        <span>Joseph D Associates / Thekken.in</span>
         <span>jimmyj.is-a.dev</span>
       </div>
     </div>,

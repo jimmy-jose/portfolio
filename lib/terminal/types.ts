@@ -15,7 +15,7 @@ export type CommandResult = {
   cwd?: string;
   view?: 'identity' | 'contact' | 'impact' | 'ai' | 'resume';
   entries?: ListingEntry[];
-  effect?: 'clear' | 'exit' | 'matrix';
+  effect?: 'clear' | 'exit' | 'matrix' | 'references';
   project?: string;
   game?: GameId;
   error?: boolean;

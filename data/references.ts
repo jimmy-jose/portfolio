@@ -13,6 +13,7 @@ export type ProjectScreenshot = {
 export type CaseStudy = {
   id: ProjectId;
   name: string;
+  shortName?: string;
   category: string;
   title: string;
   summary: string;
@@ -67,24 +68,33 @@ export const referencesPage = {
 export const caseStudies: CaseStudy[] = [
   {
     id: 'jda',
-    name: 'JDA',
+    name: 'Joseph D Associates',
+    shortName: 'JDA',
     category: 'Internal business software / Workflow automation',
     title: 'Practice management, built around the practice.',
     summary:
       'An internal practice-management application for a chartered accountancy firm, designed to help organize clients, responsibilities and day-to-day work.',
-    client: 'JDA, a chartered accountancy practice',
+    client: 'Joseph D Associates, a chartered accountancy practice',
     contribution: 'Application development',
     challenge:
       'A CA practice needs a clear way to organize client work, responsibilities and daily operations around its own workflows.',
     solution:
       'A dedicated internal application designed around the practice’s operational needs, rather than a one-size-fits-all process.',
     outcome:
-      'A practice-management application delivered for JDA. Product screens and client-specific operational details remain private.',
-    technologies: ['Next.js', 'MySQL', 'Cloudflare R2'],
+      'A practice-management application delivered for Joseph D Associates. Product screens and client-specific operational details remain private.',
+    technologies: [
+      'Next.js App Router with TypeScript',
+      'React 19 and Tailwind CSS',
+      'Turso/libSQL with Drizzle ORM',
+      'Better Auth for authentication',
+      'S3-compatible private storage for files',
+      'Vitest and Playwright for testing',
+      'Vercel for deployment',
+    ],
     screenshots: [],
     editorialNotes: [
-      'Technology stack confirmed by Jimmy on 2026-10-12.',
-      'Confirm architecture, deployment and technical ownership before expanding the contribution.',
+      'Technology stack updated and confirmed by Jimmy on 2026-10-13.',
+      'Confirm personal delivery scope and technical ownership before expanding the contribution.',
       'Confirm individual features and client-validated operational outcomes before publication.',
       'Add only client-approved, anonymized screenshots. Do not recreate a fictitious dashboard.',
     ],
@@ -104,7 +114,16 @@ export const caseStudies: CaseStudy[] = [
       'A searchable local directory with category browsing and location-aware discovery, bringing local businesses into a focused web experience.',
     outcome:
       'A live, publicly accessible discovery platform for Thiruvalla, with a mobile-first interface for search and browsing.',
-    technologies: ['Next.js', 'MySQL', 'Cloudflare R2'],
+    technologies: [
+      'Next.js 16 + React 19',
+      'TypeScript 5',
+      'Tailwind CSS 4 + shadcn/ui',
+      'TiDB Cloud + Drizzle ORM',
+      'Better Auth',
+      'Cloudflare R2',
+      'Resend',
+      'Vercel + Analytics',
+    ],
     website: 'https://thekken.in/',
     screenshots: [
       {
@@ -127,34 +146,36 @@ export const caseStudies: CaseStudy[] = [
       },
     ],
     editorialNotes: [
-      'Technology stack confirmed by Jimmy on 2026-10-12.',
+      'Technology stack updated and confirmed by Jimmy on 2026-10-13. The public summary highlights the main technologies.',
+      'Next.js uses the App Router, Server Actions and API routes on Node.js; TypeScript runs in strict mode. UI also uses Base UI, Lucide and Tabler.',
+      'TiDB Cloud is MySQL-compatible and accessed through Drizzle ORM with the TiDB Serverless HTTP driver. Better Auth handles admin login and sessions. R2 uses the AWS S3 SDK; Resend forwards contact forms. Analytics include Vercel Analytics, Speed Insights and custom analytics.',
       'Public UI reviewed and captured on 2026-10-12. Listing sections were empty; do not claim traffic, adoption or populated listings.',
-      'Administration capabilities supplied in the brief; exact personal scope and deployment ownership still need confirmation.',
+      'Admin authentication confirmed; exact personal delivery scope and technical ownership still need confirmation.',
     ],
   },
 ];
 
-// Sample copy requested by Jimmy. Visible ONLY in development, explicitly labelled.
-// Replace the quote and attribution with exact client-approved text, then approve.
+// Approved testimonials are published; draft samples are development-only.
+// Keep published wording and attribution aligned with the approved copy.
 // A testimonial approval does NOT approve publication of reference contact details.
 export const testimonials: Testimonial[] = [
   {
     projectId: 'jda',
-    status: 'draft',
-    name: 'JDA client',
-    designation: 'Client representative (draft)',
-    organization: 'JDA',
+    status: 'approved',
+    name: 'Dony Joseph',
+    designation: 'Partner',
+    organization: 'Joseph D Associates',
     quote:
-      'Jimmy took the time to understand our working day and turned our requirements into practical software. Communication was clear throughout.',
+      'Jimmy took the time to understand our working day and turned our requirements into practical software. He delivered quickly, communicated clearly, and approached every stage of the project with professionalism.',
   },
   {
     projectId: 'thekken',
-    status: 'draft',
-    name: 'Thekken client',
-    designation: 'Client representative (draft)',
-    organization: 'Thekken',
+    status: 'approved',
+    name: 'Ayush Rajan',
+    designation: 'Founder',
+    organization: 'Thekken.in',
     quote:
-      'Jimmy brought a thoughtful approach to the product, from the first conversations to the details of the mobile experience.',
+      'Working with Mr Jimmy Jose was super easy. He knows his stuff, gets things done like a pro, and is really friendly to work with. Coordination was smooth from start to finish.',
   },
 ];
 
@@ -162,15 +183,15 @@ export const clientReferences: ClientReference[] = [
   {
     projectId: 'jda',
     status: 'draft',
-    name: '',
-    designation: '',
-    organization: 'JDA',
+    name: 'Dony Joseph',
+    designation: 'Partner',
+    organization: 'Joseph D Associates',
   },
   {
     projectId: 'thekken',
     status: 'draft',
-    name: '',
-    designation: '',
-    organization: 'Thekken',
+    name: 'Ayush Rajan',
+    designation: 'Founder',
+    organization: 'Thekken.in',
   },
 ];
